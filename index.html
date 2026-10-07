@@ -39,7 +39,7 @@ button{font-family:inherit}
 .sheet .sub{margin-top:4px;font-size:14px;color:var(--muted)}
 form{display:flex;flex-direction:column;gap:20px}
 .group{display:flex;flex-direction:column;gap:8px}
-label,legend{font-size:14px;font-weight:500;color:var(--ink)}
+label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .field{position:relative;display:flex;align-items:center;gap:12px;height:52px;padding:0 14px;background:var(--field);border:1px solid var(--line);border-radius:12px}
 .field:focus-within{border-color:var(--brand);box-shadow:0 0 0 3px rgba(108,77,230,.18)}
 .field.invalid{border-color:var(--danger);background:#FFF8F9}
@@ -47,7 +47,7 @@ label,legend{font-size:14px;font-weight:500;color:var(--ink)}
 .field svg.lead{flex-shrink:0;width:20px;height:20px;fill:none;stroke:#6B7280;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
 .field.invalid svg.lead{stroke:var(--danger)}
 .field input,.field select{flex:1;min-width:0;height:100%;border:0;outline:0;background:transparent;font-family:inherit;font-size:15px;color:var(--ink);letter-spacing:.02em}
-.field input::placeholder{color:#7A8094}
+.field input::placeholder{color:#7A8094;letter-spacing:0;text-transform:none}
 .field select{appearance:none;-webkit-appearance:none;cursor:pointer;padding-right:28px;letter-spacing:0}
 .field select:invalid{color:#7A8094}
 .field .chev{position:absolute;right:14px;top:50%;width:18px;height:18px;margin-top:-9px;fill:none;stroke:#6B7280;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;pointer-events:none}
@@ -71,7 +71,8 @@ label,legend{font-size:14px;font-weight:500;color:var(--ink)}
 .steps{display:flex;gap:6px}
 .steps i{flex:1;height:4px;border-radius:2px;background:var(--line)}
 .steps i.on{background:var(--brand)}
-fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:column;gap:10px}
+.courses{display:flex;flex-direction:column;gap:8px;min-width:0}
+.legend-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
 .course{display:flex;align-items:center;gap:14px;min-height:56px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--field);cursor:pointer}
 .course:has(input:checked){border-color:var(--brand);background:var(--brand-soft)}
 .course:focus-within{box-shadow:0 0 0 3px rgba(108,77,230,.18)}
@@ -79,8 +80,34 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 .course input{width:22px;height:22px;margin:0;accent-color:var(--brand);flex-shrink:0}
 .course .code{flex:1;font-weight:600;letter-spacing:.04em}
 .course .price{font-variant-numeric:tabular-nums;color:var(--muted);font-size:14px}
-.total{display:flex;align-items:center;justify-content:space-between;padding:14px 16px;border-radius:12px;background:var(--brand-soft);color:var(--brand-deep);font-weight:600}
-.total strong{font-size:18px;font-variant-numeric:tabular-nums}
+.total{font-size:13px;font-weight:600;color:var(--brand-deep);white-space:nowrap}
+.total strong{margin-left:4px;font-size:15px;font-variant-numeric:tabular-nums}
+
+/* ---------- Compact sign-up screens: both steps fit one phone screen ---------- */
+.su-head{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.su-head h2{font-size:18px;line-height:1.25}
+.su-step{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
+.auth.tight .hero{flex-direction:row;justify-content:flex-start;align-items:center;gap:12px;text-align:left;padding:calc(14px + env(safe-area-inset-top,0px)) 20px 14px}
+.auth.tight .hero .illus{width:64px;height:56px;flex-shrink:0}
+.auth.tight .hero .brand{margin:0;font-size:22px}
+.auth.tight .hero .tagline{margin-top:2px;font-size:10px;letter-spacing:.14em}
+.auth.tight .sheet{padding:18px 20px calc(12px + env(safe-area-inset-bottom,0px));gap:14px;border-radius:24px 24px 0 0}
+.auth.tight .steps{margin-top:8px}
+.auth.tight form{gap:12px}
+.auth.tight .group{gap:5px}
+.auth.tight label,.auth.tight .lbl{font-size:13px}
+.auth.tight .field{height:44px;border-radius:10px}
+.auth.tight .eye{width:40px;height:40px;margin-right:-6px}
+.auth.tight .err{font-size:12px;line-height:1.3}
+.auth.tight .formmsg{padding:8px 12px;font-size:13px}
+.auth.tight .btn{height:48px;margin-top:2px}
+.auth.tight .course{min-height:40px;padding:0 14px;gap:12px;border-radius:10px}
+.auth.tight .course input{width:20px;height:20px}
+.auth.tight .switch{font-size:13px}
+.auth.tight .switch a{padding:8px 2px}
+.auth.tight .linkbtn{min-height:40px;padding:0 4px;font-size:13px}
+.foot-row{display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:0 12px}
+@media (max-height:700px){.auth.tight .hero .illus{display:none}}
 
 /* ---------- Dashboard ---------- */
 .dash-wrap{min-height:100vh;background:var(--canvas)}
@@ -201,7 +228,7 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 <label for="si-pass">Password</label>
 <div class="field">
 <svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-<input id="si-pass" name="password" type="password" autocomplete="current-password" aria-describedby="si-pass-err">
+<input id="si-pass" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="si-pass-err">
 <button type="button" class="eye" data-eye="si-pass" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></button>
 </div>
 <p class="err" id="si-pass-err" role="alert" hidden></p>
@@ -215,23 +242,22 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 </section>
 
 <!-- ================= SIGN UP, STEP 1 ================= -->
-<section id="view-signup1" class="auth" hidden>
+<section id="view-signup1" class="auth tight" hidden>
 <div class="auth-col">
-<header class="hero compact">
+<header class="hero">
 <svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
 <h1 class="brand" tabindex="-1">HashCLASS</h1>
 <p class="tagline">SUPPLEMENTARY EXAMINATIONS</p>
 </header>
 <main class="sheet">
 <div>
+<div class="su-head"><h2>Create your account</h2><span class="su-step">Step 1 of 2</span></div>
 <div class="steps" aria-hidden="true"><i class="on"></i><i></i></div>
-<h2 style="margin-top:16px">Create your account</h2>
-<p class="sub">Step 1 of 2 · Your details</p>
 </div>
 <form id="signup1-form" novalidate>
 <div class="group">
 <label for="su-name">Full Name</label>
-<div class="field"><input id="su-name" name="name" type="text" autocomplete="name" autocapitalize="characters" spellcheck="false" placeholder="AS ON YOUR STUDENT ID" aria-describedby="su-name-err"></div>
+<div class="field"><input id="su-name" name="name" type="text" autocomplete="name" autocapitalize="characters" spellcheck="false" placeholder="Full name as on your student ID" aria-describedby="su-name-err"></div>
 <p class="err" id="su-name-err" role="alert" hidden></p>
 </div>
 <div class="group">
@@ -255,10 +281,9 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 <div class="group">
 <label for="su-pass">Create Password</label>
 <div class="field">
-<input id="su-pass" name="password" type="password" autocomplete="new-password" aria-describedby="su-pass-hint su-pass-err">
+<input id="su-pass" name="password" type="password" autocomplete="new-password" placeholder="At least 8 characters" aria-describedby="su-pass-err">
 <button type="button" class="eye" data-eye="su-pass" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></button>
 </div>
-<p class="hint" id="su-pass-hint">At least 8 characters. You will use it with your registration number to sign in.</p>
 <p class="err" id="su-pass-err" role="alert" hidden></p>
 </div>
 <button type="submit" class="btn" id="su1-submit" disabled>NEXT</button>
@@ -269,26 +294,24 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 </section>
 
 <!-- ================= SIGN UP, STEP 2 ================= -->
-<section id="view-signup2" class="auth" hidden>
+<section id="view-signup2" class="auth tight" hidden>
 <div class="auth-col">
-<header class="hero compact">
+<header class="hero">
 <svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
 <h1 class="brand" tabindex="-1">HashCLASS</h1>
 <p class="tagline">SUPPLEMENTARY EXAMINATIONS</p>
 </header>
 <main class="sheet">
 <div>
+<div class="su-head"><h2>Courses and payment</h2><span class="su-step">Step 2 of 2</span></div>
 <div class="steps" aria-hidden="true"><i class="on"></i><i class="on"></i></div>
-<h2 style="margin-top:16px">Courses and payment</h2>
-<p class="sub">Step 2 of 2 · Choose your courses</p>
 </div>
 <form id="signup2-form" novalidate>
-<fieldset id="courses-fs" aria-describedby="courses-err">
-<legend>Courses to Study</legend>
-<div id="course-list" style="display:flex;flex-direction:column;gap:10px"></div>
-<div class="total" aria-live="polite"><span>Total</span><strong id="course-total">TZS 0</strong></div>
+<div class="courses" id="courses-fs" role="group" aria-labelledby="courses-lbl" aria-describedby="courses-err">
+<div class="legend-row"><span class="lbl" id="courses-lbl">Courses to Study</span><span class="total" aria-live="polite">Total <strong id="course-total">TZS 0</strong></span></div>
+<div id="course-list" style="display:flex;flex-direction:column;gap:8px"></div>
 <p class="err" id="courses-err" role="alert" hidden></p>
-</fieldset>
+</div>
 <div class="group">
 <label for="su-pay">Your Payment Number</label>
 <div class="field"><input id="su-pay" name="pay" type="tel" inputmode="numeric" autocomplete="off" placeholder="+255XXXXXXXXX" aria-describedby="su-pay-err"></div>
@@ -296,14 +319,16 @@ fieldset{border:0;margin:0;padding:0;min-width:0;display:flex;flex-direction:col
 </div>
 <div class="group">
 <label for="su-payname">Payment Number Name</label>
-<div class="field"><input id="su-payname" name="payname" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="NAME REGISTERED ON THE NUMBER" aria-describedby="su-payname-err"></div>
+<div class="field"><input id="su-payname" name="payname" type="text" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="Name registered on the number" aria-describedby="su-payname-err"></div>
 <p class="err" id="su-payname-err" role="alert" hidden></p>
 </div>
 <p class="formmsg" id="su2-msg" role="alert" hidden></p>
 <button type="submit" class="btn" id="su2-submit" disabled>REGISTER</button>
 </form>
-<button type="button" class="linkbtn" id="su2-back">Back to my details</button>
-<p class="switch" style="margin-top:-12px">Already have an account? <a id="to-signin-2" href="#/signin">Sign In</a></p>
+<div class="foot-row">
+<button type="button" class="linkbtn" id="su2-back">‹ Back</button>
+<p class="switch">Already have an account? <a id="to-signin-2" href="#/signin">Sign In</a></p>
+</div>
 </main>
 </div>
 </section>
@@ -532,7 +557,8 @@ function update(formId, force) {
     setErr(id, msg, mark);
   });
   const btn = $(cfg.btn);
-  if (!btn.hasAttribute('aria-busy')) btn.disabled = Object.keys(problems).length > 0;
+  // A field flagged by the server (wrong password, number already registered) keeps the button off until it is edited
+  if (!btn.hasAttribute('aria-busy')) btn.disabled = Object.keys(problems).length > 0 || Object.keys(se).length > 0;
   return problems;
 }
 function updateAll() { Object.keys(FORMS).forEach((id) => update(id)); }
@@ -571,16 +597,31 @@ function bindName(input) {
   });
 }
 function bindReg(input) {
+  const PREFIX = 1;   // the leading T can never be removed
+  const clampCaret = () => {
+    const s = input.selectionStart, e = input.selectionEnd;
+    if (s < PREFIX || e < PREFIX) input.setSelectionRange(Math.max(s, PREFIX), Math.max(e, PREFIX));
+  };
   input.addEventListener('focus', () => {
-    if (!input.value) { input.value = 'T'; input.dataset.prev = 'T'; }
+    if (!input.value) {
+      input.value = 'T'; input.dataset.prev = 'T';
+      requestAnimationFrame(() => input.setSelectionRange(input.value.length, input.value.length));
+    }
+  });
+  input.addEventListener('keydown', (e) => {
+    const collapsed = input.selectionStart === input.selectionEnd;
+    if (e.key === 'Backspace' && collapsed && input.selectionStart <= PREFIX) e.preventDefault();
+    if (e.key === 'Delete' && collapsed && input.selectionStart < PREFIX) e.preventDefault();
   });
   input.addEventListener('input', () => {
     const prev = input.dataset.prev || '';
     const typing = input.value.length > prev.length;
-    const out = F.reg(input.value, typing);
+    let out = F.reg(input.value, typing);
+    if (!out) out = 'T';   // catches select-all + delete, cut, and keyboards that send no key name
     if (out !== input.value) input.value = out;
     input.dataset.prev = out;
   });
+  ['click', 'select', 'keyup'].forEach((ev) => input.addEventListener(ev, clampCaret));
   input.addEventListener('blur', () => {
     if (input.value === 'T') { input.value = ''; input.dataset.prev = ''; }
   });
