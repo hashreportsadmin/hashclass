@@ -4,6 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#3B2BB0">
+<meta name="color-scheme" content="only light">
+<meta name="supported-color-schemes" content="light">
 <title>HashCLASS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -14,8 +16,10 @@
   --brand:#6C4DE6; --brand-hover:#5E3FDB; --brand-deep:#3B2BB0; --brand-mid:#5440D6; --brand-soft:#EFEBFF;
   --link:#4F46E5; --danger:#C62839; --danger-soft:#FDECEE; --ok:#0B7A4B; --ok-soft:#E4F6EC; --warn:#8A5A00; --warn-soft:#FFF3D6;
   --font:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
-  color-scheme:light;
+  color-scheme:only light;
 }
+html{color-scheme:only light;background:#F3F2FB}
+@media (prefers-color-scheme:dark){:root,html,body{color-scheme:only light}}
 *{box-sizing:border-box}
 html,body{margin:0}
 body{font-family:var(--font);color:var(--ink);background:var(--canvas);font-size:15px;line-height:1.45;-webkit-font-smoothing:antialiased}
@@ -357,9 +361,11 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 #view-dash .stat-v{display:block;font-size:20px;line-height:1.15}
 #view-dash .stat-l{display:block;margin-top:2px;font-size:11.5px}
 .stat .chev{width:16px;height:16px;color:var(--muted)}
-.stat.c1{background:linear-gradient(135deg,#fff,#F3F0FF)}.stat.c1 .stat-ic{background:#E4DEFF;color:var(--brand-deep)}
-.stat.c2{background:linear-gradient(135deg,#fff,#EAF8F1)}.stat.c2 .stat-ic{background:#D3F0E2;color:var(--ok)}.stat.c2 .stat-v{color:var(--ok)}.stat.c2 .chev{color:var(--ok)}
-.stat.c3{background:linear-gradient(135deg,#fff,#FFF3EA)}.stat.c3 .stat-ic{background:#FFE2CF;color:#E8631A}.stat.c3 .stat-v{color:#C2500F}.stat.c3 .chev{color:#E8631A}
+.stat.c1,.stat.c2,.stat.c3{background:#fff}
+.stat.c1 .stat-ic,.stat.c2 .stat-ic,.stat.c3 .stat-ic{background:transparent}
+.stat.c1 .stat-ic{color:var(--brand-deep)}.stat.c1 .stat-v{color:var(--brand-deep)}.stat.c1 .chev{color:var(--brand-deep)}
+.stat.c2 .stat-ic{color:#1F6FD0}.stat.c2 .stat-v{color:#1A5FB4}.stat.c2 .chev{color:#1F6FD0}
+.stat.c3 .stat-ic{color:#E8631A}.stat.c3 .stat-v{color:#C2500F}.stat.c3 .chev{color:#E8631A}
 @media (max-width:520px){
   #view-dash .stat{flex-direction:column;align-items:flex-start;gap:8px}
   .stat .chev{display:none}
@@ -474,11 +480,9 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
   -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12px);mask-image:linear-gradient(to bottom,transparent 0,#000 12px)}
 .dash-scroll::-webkit-scrollbar{display:none}
 #view-dash .dash{padding-top:8px}
-.stat.c3.paid{background:linear-gradient(135deg,#E4F6EC,#CDEFDC);border-color:#9BDDBB}
-.stat.c3.paid .stat-ic{background:#BDE8D2;color:var(--ok)}
-.stat.c3.paid .stat-v{color:#0B6B42}
-.stat.c3.paid .stat-l{color:#2F7A57}
-.stat.c3.paid .chev{color:var(--ok)}
+/* Paid: the card keeps its own orange colour; only the text turns green */
+.stat.c3.paid .stat-v{color:#0B7A4B}
+.stat.c3.paid .stat-l{color:#0B7A4B}
 .toast{background:#fff;color:#1F2433;font-weight:600;border-bottom:3px solid #6C4DE6;box-shadow:0 8px 22px rgba(30,20,110,.22)}
 
 /* ---------- Round 4: photo background on the join card (purple overlay kept semi-transparent) ---------- */
@@ -486,6 +490,16 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 #join .join-btn{text-shadow:none}
 .dur{display:flex;align-items:center;gap:5px;margin-top:3px;font-weight:600;color:var(--brand-deep)}
 .dur .ic{width:13px;height:13px}
+
+/* ---------- Registration check popups ---------- */
+.dlg-pop{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:24px;background:rgba(20,16,60,.45);animation:fadein .2s ease}
+.dlg-card{width:min(100%,340px);padding:26px 22px 20px;border-radius:22px;background:#fff;color:var(--ink);text-align:center;box-shadow:0 22px 50px rgba(30,20,110,.35)}
+.dlg-card h3{font-size:19px;font-weight:700;margin-bottom:8px}
+.dlg-card p{font-size:14px;line-height:1.45;color:var(--muted)}
+.dlg-btns{display:flex;gap:10px;margin-top:20px}
+.dlg-btns button{flex:1;height:46px;border-radius:12px;font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer}
+.dlg-btns .dlg-cancel{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
+.dlg-btns .dlg-ok{background:var(--brand);border:0;color:#fff;box-shadow:0 6px 16px rgba(108,77,230,.28)}
 </style>
 </head>
 <body>
@@ -1384,6 +1398,44 @@ function problemText(err, doing) {
   return detail ? text + ' (' + detail + ')' : text;
 }
 
+/* ------------------- registration number check + popups -------------------
+   Needs the SQL function reg_is_registered(p_reg text) in Supabase (see the
+   notes that came with this file). Returns true / false, or null when the
+   check could not be done (function missing, offline). */
+async function isRegistered(reg) {
+  try {
+    const { data, error } = await sb.rpc('reg_is_registered', { p_reg: reg });
+    if (error) { console.warn('reg_is_registered unavailable', error); return null; }
+    return data === true;
+  } catch (err) { console.warn('reg check failed', err); return null; }
+}
+function showDialog(title, text, okLabel, onOk) {
+  document.querySelectorAll('.dlg-pop').forEach((n) => n.remove());
+  const prevFocus = document.activeElement;
+  const close = () => { pop.remove(); document.removeEventListener('keydown', onKey); if (prevFocus && prevFocus.focus) prevFocus.focus(); };
+  const onKey = (ev) => { if (ev.key === 'Escape') close(); };
+  const cancel = h('button', { type: 'button', class: 'dlg-cancel', text: 'CANCEL', onclick: close });
+  const ok = h('button', { type: 'button', class: 'dlg-ok', text: okLabel, onclick: () => { close(); onOk(); } });
+  const pop = h('div', { class: 'dlg-pop', role: 'dialog', 'aria-modal': 'true', 'aria-label': title },
+    h('div', { class: 'dlg-card' }, h('h3', { text: title }), h('p', { text }), h('div', { class: 'dlg-btns' }, cancel, ok)));
+  pop.addEventListener('click', (ev) => { if (ev.target === pop) close(); });
+  document.addEventListener('keydown', onKey);
+  document.body.append(pop);
+  ok.focus();
+}
+function showAlreadyRegistered(reg) {
+  showDialog('Already registered', 'The registration number ' + reg + ' is already registered. Please log in instead.', 'LOGIN', () => {
+    const si = $('si-reg'); si.value = reg; si.dataset.prev = reg;
+    go('signin');
+  });
+}
+function showNotRegistered(reg) {
+  showDialog('Not registered', 'The registration number ' + reg + ' is not registered yet. Please register to create your account.', 'REGISTER', () => {
+    const su = $('su-reg'); su.value = reg; su.dataset.prev = reg;
+    go('signup1');
+  });
+}
+
 /* ----------------------------- sign in ----------------------------- */
 async function onSignIn(e) {
   e.preventDefault();
@@ -1400,6 +1452,8 @@ async function onSignIn(e) {
     if (error) {
       console.error('sign in failed', error);
       if (/invalid login/i.test(error.message)) {
+        const reg = $('si-reg').value;
+        if (await isRegistered(reg) === false) { showNotRegistered(reg); return; }
         serverErr['signin-form'] = { 'si-pass': 'Registration number or password is incorrect.', 'si-reg': true };
         update('signin-form');
         $('si-pass').focus();
@@ -1432,6 +1486,8 @@ async function onNext(e) {
 
   setBusy(btn, true, 'Please wait…');
   try {
+    const regNo = $('su-reg').value;
+    if (await isRegistered(regNo) === true) { state.draftOk = false; showAlreadyRegistered(regNo); return; }
     await loadCourseList();   // fetch the current prices before showing step 2
     state.draftOk = true;
     go('signup2');
@@ -1460,11 +1516,9 @@ function updateTotal() {
   $('course-total').textContent = F.money(total);
 }
 function backToDetailsWithRegError() {
-  touched.add('su-reg');
-  serverErr['signup1-form'] = { 'su-reg': 'This registration number is already registered. Sign in instead.' };
+  const reg = $('su-reg').value;
   go('signup1');
-  update('signup1-form');
-  $('su-reg').focus();
+  showAlreadyRegistered(reg);
 }
 function resetSignup() {
   $('signup1-form').reset(); $('signup2-form').reset();
