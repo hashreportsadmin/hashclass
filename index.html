@@ -388,6 +388,80 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
   #view-dash .conn{padding:9px}
   #view-dash .signout{padding:0 12px}
 }
+
+/* ---------- Round 2: compact dashboard and top message bar ---------- */
+#view-dash{font-size:12px}
+#view-dash .dash-head{border-radius:0 0 50% 50%/0 0 22px 22px}
+#view-dash .top{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:2px}
+#view-dash .logo{gap:8px}
+#view-dash .logo-mark{width:32px;height:32px;border-radius:10px}
+#view-dash .logo-name{font-size:15px}
+#view-dash .conn{padding:5px 9px;font-size:10.5px}
+.bell{width:34px;height:34px}.bell .ic{width:19px;height:19px}.bell-dot{top:6px;right:7px;width:8px;height:8px}
+#view-dash .signout{min-height:34px;padding:0 12px;gap:6px;font-size:11.5px}
+#view-dash .signout .ic{width:15px;height:15px}
+#view-dash .me-row{padding:6px 0 16px}
+#view-dash .me{gap:10px}
+#view-dash .avatar{width:44px;height:44px;font-size:15px}
+#view-dash .me-hi{font-size:11px}
+#view-dash .me h1{font-size:15px}
+#view-dash .me-meta{margin-top:2px;font-size:11px}
+#view-dash .me-meta .ic{width:14px;height:14px}
+.motto .script{font-size:24px}.motto svg{width:120px}.motto-s{font-size:10.5px}
+.join-wrap{padding-top:12px}
+#join,#join.live{margin:0;padding:12px 14px;border-radius:16px}
+#join .join-illus{width:92px;top:8px;right:6px}
+#join .join-head{min-height:62px;padding-right:96px}
+#join .join-eyebrow{font-size:10px}
+#join .join-kicker{margin-top:6px;font-size:9px}
+#join .join-class{font-size:clamp(18px,5.5vw,22px)}
+#join .join-class.small{font-size:14px;margin-top:6px}
+#join .join-row{gap:7px;margin-top:5px;font-size:11.5px}
+#join .join-row .ic{width:15px;height:15px}
+#join .join-rule{margin:8px 0 0}
+#join .join-status{font-size:11px;line-height:1.4}
+#join .join-btn{margin-top:10px;max-width:300px;height:42px;padding:0 16px;gap:10px;font-size:13px}
+@media (min-width:640px){
+  #join,#join.live{padding:14px 20px}
+  #join .join-illus{width:170px;right:18px;top:10px}
+  #join .join-head{min-height:0;padding-right:0}
+}
+#view-dash .dash{padding-top:12px;gap:10px}
+#view-dash .stat{min-height:54px;padding:8px 10px;gap:8px;border-radius:12px}
+.stat-ic{width:32px;height:32px}.stat-ic .ic{width:17px;height:17px}
+#view-dash .stat-v{font-size:15px}
+#view-dash .stat-l{margin-top:1px;font-size:10px}
+.stat .chev{width:13px;height:13px}
+@media (max-width:520px){#view-dash .stat{gap:5px}.stat-ic{width:30px;height:30px}}
+#view-dash .card{gap:8px;padding:11px 12px;border-radius:14px}
+#view-dash .card-head{gap:8px}
+#view-dash .card-head h2{font-size:13.5px}
+#view-dash .card-sub{font-size:10px}
+.cic{width:30px;height:30px;border-radius:9px}.cic .ic{width:17px;height:17px}
+#view-dash .more{min-height:30px;font-size:11.5px}
+.inbox{padding:2px 10px 6px;border-radius:11px}
+#view-dash .item{gap:8px;padding:7px 0}
+#view-dash .t{font-size:12px}
+#view-dash .s{font-size:10.5px}
+#view-dash .badge{min-width:46px;padding:4px 6px;font-size:10px}
+#view-dash .pill{padding:2px 7px;font-size:9.5px}
+#view-dash .datechip{width:34px;padding:3px 0}
+#view-dash .datechip b{font-size:13px}
+#view-dash .datechip span{font-size:8px}
+#view-dash .sum{padding-top:7px;font-size:11.5px}
+#view-dash .note{font-size:10px}
+#view-dash .bar{height:4px}
+#view-dash .empty{padding:10px 6px;font-size:11px}
+#view-dash .empty strong{font-size:12px}
+#view-dash .empty-rich{gap:12px;padding:8px 12px}
+.empty-rich .eil{width:60px}
+#view-dash .empty-rich strong{font-size:12.5px}
+.dfoot{padding-bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:10.5px}
+
+/* messages: full-width bar at the top */
+.toast{left:0;right:0;top:0;bottom:auto;transform:none;width:100%;max-width:none;z-index:60;padding:calc(9px + env(safe-area-inset-top,0px)) 16px 9px;border-radius:0 0 14px 14px;background:linear-gradient(90deg,#3B2BB0,#5440D6);border-bottom:2px solid #8F7BFF;color:#fff;font-size:11.5px;line-height:1.35;font-weight:500;text-align:center;box-shadow:0 8px 22px rgba(30,20,110,.35)}
+.toast:not([hidden]){animation:tdown .25s ease}
+@keyframes tdown{from{transform:translateY(-100%)}to{transform:none}}
 </style>
 </head>
 <body>
@@ -433,10 +507,10 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <linearGradient id="hc-logo-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A87FF"/><stop offset="1" stop-color="#4B38C9"/></linearGradient>
 <g id="hc-logo">
 <rect width="48" height="48" rx="14" fill="url(#hc-logo-g)"/>
-<path d="M15 19.5v5.2c0 1.7 4 3.3 9 3.3s9-1.6 9-3.3v-5.2l-9 4.4z" fill="#FFFFFF" fill-opacity="0.82"/>
-<polygon points="24,7.5 41,15.5 24,23.5 7,15.5" fill="#FFFFFF"/>
-<path d="M39.5 16.5v7" stroke="#FFB454" stroke-width="2" stroke-linecap="round"/>
-<path d="M19.2 31.2l-1.6 9.6M28.6 31.2l-1.6 9.6M15.6 34.4h19.2M14.8 38.2h19.2" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+<path d="M14 24v7.5c0 2.3 4.5 4.5 10 4.5s10-2.2 10-4.5V24l-10 5z" fill="#FFFFFF" fill-opacity="0.82"/>
+<polygon points="24,10 43,19.5 24,29 5,19.5" fill="#FFFFFF"/>
+<path d="M40 21.5v9.5" stroke="#FFB454" stroke-width="2.4" stroke-linecap="round"/>
+<circle cx="40" cy="32.5" r="2.2" fill="#FFB454"/>
 </g>
 <g id="hc-live">
 <ellipse cx="140" cy="92" rx="112" ry="64" fill="#FFFFFF" fill-opacity="0.1"/>
@@ -653,6 +727,11 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <p class="motto-s">Your goals are within reach</p>
 </div>
 </div>
+
+</div>
+</div>
+
+<div class="wrap join-wrap">
 <section class="join" id="join" aria-label="Join class">
 <svg class="join-illus" viewBox="0 0 260 160" aria-hidden="true"><use href="#hc-live"/></svg>
 <div class="join-head">
@@ -665,7 +744,6 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <p class="join-row st"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span class="join-status" id="join-status" aria-live="polite"></span></p>
 <button type="button" id="join-btn" class="join-btn" aria-describedby="join-status">JOIN CLASS</button>
 </section>
-</div>
 </div>
 
 <main class="dash">
