@@ -199,6 +199,66 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);z-index:20;max-width:min(92vw,420px);padding:12px 16px;border-radius:12px;background:#1F2433;color:#fff;font-size:14px;line-height:1.4;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 .boot{min-height:100vh;display:grid;place-items:center;background:#3B2BB0;color:#fff;font-weight:600;letter-spacing:.08em}
 @media (prefers-reduced-motion:reduce){.dot.on,.join.live .join-btn{animation:none}.btn[aria-busy="true"]::before,.join-btn[aria-busy="true"]::before{animation-duration:2.4s}}
+
+/* ---------- Sign-in links ---------- */
+.switches{display:flex;flex-direction:column;align-items:center}
+.btn.auto{width:auto;flex:0 0 auto;height:42px;padding:0 18px;font-size:13px;box-shadow:none}
+.join-btn[aria-disabled="true"]{cursor:not-allowed;background:rgba(255,255,255,.78)}
+
+/* ---------- Admin panel ---------- */
+.adm{min-height:100vh;background:var(--canvas);font-size:13px;line-height:1.4}
+.adm-top{background:linear-gradient(180deg,#3B2BB0 0%,#4A38C6 100%);color:#fff}
+.adm-bar{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:calc(10px + env(safe-area-inset-top,0px)) 0 6px}
+.adm-nav{display:flex;gap:2px;overflow-x:auto;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.adm-nav::-webkit-scrollbar{display:none}
+.adm-nav a{flex:0 0 auto;display:inline-flex;align-items:center;min-height:44px;padding:0 14px;border-bottom:3px solid transparent;color:rgba(255,255,255,.78);font-size:12px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;text-decoration:none;white-space:nowrap}
+.adm-nav a:hover{color:#fff}
+.adm-nav a[aria-current="page"]{color:#fff;border-bottom-color:#fff}
+.adm-nav a:focus-visible{outline-color:#fff;outline-offset:-3px}
+.adm-main{display:flex;flex-direction:column;gap:12px;padding-top:16px;padding-bottom:calc(32px + env(safe-area-inset-bottom,0px))}
+.adm-title{font-size:19px;font-weight:700}
+.panel{display:flex;flex-direction:column;gap:12px}
+.adm-stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid2{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;align-items:start}
+.ulist{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:minmax(0,1fr);gap:10px;align-items:start}
+.ucard{display:flex;flex-direction:column;gap:8px;min-width:0;padding:14px;border-radius:14px;background:var(--surface);border:1px solid var(--line)}
+.ucard .row1{align-items:flex-start}
+.ucard .avatar{width:36px;height:36px;font-size:12px;background:var(--brand-soft);border-color:transparent;color:var(--brand-deep)}
+.kv{display:flex;justify-content:space-between;gap:12px;font-size:12px}
+.kv .k{color:var(--muted);flex-shrink:0}
+.kv .v{font-weight:600;text-align:right;overflow-wrap:anywhere;font-variant-numeric:tabular-nums}
+.crs-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-top:1px solid var(--line)}
+.crs-row .main{flex:1;min-width:0}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.mini{display:inline-flex;align-items:center;justify-content:center;min-height:36px;padding:0 12px;border:1.5px solid var(--brand);border-radius:9px;background:var(--surface);color:var(--brand-deep);font-size:11.5px;font-weight:700;letter-spacing:.05em;text-decoration:none;cursor:pointer;white-space:nowrap}
+.mini:hover:not(:disabled){background:var(--brand-soft)}
+.mini:disabled{opacity:.55;cursor:progress}
+.mini.primary{background:var(--brand);border-color:var(--brand);color:#fff}
+.mini.primary:hover:not(:disabled){background:var(--brand-hover)}
+.mini.start{background:var(--ok);border-color:var(--ok);color:#fff}
+.mini.start:hover:not(:disabled){background:#096b42}
+.mini.danger{border-color:var(--danger);color:var(--danger)}
+.mini.danger:hover:not(:disabled){background:var(--danger-soft)}
+.mini.sm{min-height:32px;padding:0 10px;font-size:10.5px}
+.toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px}
+.toolbar .field{flex:1 1 220px;height:42px;border-radius:10px}
+.sel{height:42px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--field);font:inherit;font-size:14px;color:var(--ink);cursor:pointer}
+.live-banner{display:flex;flex-direction:column;gap:10px;padding:12px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--ok);border-left-width:5px}
+.lb-row{display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px}
+.lb-t{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:800;letter-spacing:.08em;color:var(--ink)}
+.lb-row .s{flex:1 1 140px}
+.frow{display:grid;grid-template-columns:minmax(0,1fr);gap:20px}
+.hostline{font-size:11.5px;color:var(--muted);overflow-wrap:anywhere}
+.pill.live{background:var(--ok);color:#fff}
+.card.form-card{gap:14px}
+.card .btn-row .btn{height:48px}
+@media (min-width:560px){.frow{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:820px){
+  .adm-stats{grid-template-columns:repeat(5,minmax(0,1fr))}
+  .grid2{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .ulist{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .adm-main{padding-left:24px;padding-right:24px}
+}
 </style>
 </head>
 <body>
@@ -277,7 +337,10 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <p class="formmsg" id="si-msg" role="alert" hidden></p>
 <button type="submit" class="btn" id="si-submit" disabled>Login</button>
 </form>
+<div class="switches">
 <p class="switch">Don't have an account? <a id="to-signup" href="#/signup1">Sign Up</a></p>
+<p class="switch">Are you an admin? <a id="to-admin" href="#/admin-signin">Sign In</a></p>
+</div>
 </main>
 </div>
 </section>
@@ -443,6 +506,184 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 </main>
 </section>
 
+<!-- ================= ADMIN SIGN IN ================= -->
+<section id="view-admin-signin" class="auth" hidden>
+<div class="auth-col">
+<header class="hero">
+<svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
+<h1 class="brand" tabindex="-1">HashCLASS</h1>
+<p class="tagline">ADMIN PORTAL</p>
+</header>
+<main class="sheet">
+<div>
+<h2>Admin sign in</h2>
+<p class="sub">For tutorial lecturers only.</p>
+</div>
+<form id="admin-form" novalidate>
+<div class="group">
+<label for="ad-pos">Position</label>
+<div class="field">
+<svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c.8-3.6 3.7-5.5 7-5.5s6.2 1.9 7 5.5"/></svg>
+<select id="ad-pos" name="position" required aria-describedby="ad-pos-err">
+<option value="" selected disabled>Select your position</option>
+<option value="Tutorial Lecturer">Tutorial Lecturer</option>
+</select>
+<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+<p class="err" id="ad-pos-err" role="alert" hidden></p>
+</div>
+<div class="group">
+<label for="ad-pass">Password</label>
+<div class="field">
+<svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+<input id="ad-pass" name="password" type="password" autocomplete="current-password" placeholder="Enter your password" aria-describedby="ad-pass-err">
+<button type="button" class="eye" data-eye="ad-pass" aria-label="Show password"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><svg viewBox="0 0 24 24" aria-hidden="true" hidden><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path d="M3 3l18 18"/></svg></button>
+</div>
+<p class="err" id="ad-pass-err" role="alert" hidden></p>
+</div>
+<p class="formmsg" id="ad-msg" role="alert" hidden></p>
+<button type="submit" class="btn" id="ad-submit" disabled>Login</button>
+</form>
+<p class="switch">Not an admin? <a href="#/signin">Student Sign In</a></p>
+</main>
+</div>
+</section>
+
+<!-- ================= ADMIN PANEL ================= -->
+<section id="view-admin" class="adm" hidden>
+<header class="adm-top">
+<div class="wrap">
+<div class="adm-bar">
+<div class="logo"><span class="logo-mark" aria-hidden="true">#</span><span class="logo-name">HashCLASS<small>ADMIN PANEL</small></span></div>
+<div class="top-right">
+<span class="conn" id="a-conn"><span class="dot"></span><span id="a-conn-t">Connecting</span></span>
+<button type="button" class="signout" id="a-signout">Sign out</button>
+</div>
+</div>
+<nav class="adm-nav" aria-label="Admin sections">
+<a href="#/admin/dashboard" data-tab="dashboard">Dashboard</a>
+<a href="#/admin/users" data-tab="users">Registered users</a>
+<a href="#/admin/classes" data-tab="classes">Classes</a>
+<a href="#/admin/attendance" data-tab="attendance">Attendance</a>
+</nav>
+</div>
+</header>
+
+<main class="wrap adm-main">
+<h1 class="adm-title" id="adm-title" tabindex="-1">Dashboard</h1>
+
+<!-- Dashboard -->
+<section class="panel" data-panel="dashboard" aria-label="Dashboard">
+<div class="live-banner" id="a-live" hidden></div>
+<section class="stats adm-stats" id="a-stats" aria-label="Summary"></section>
+<div class="grid2">
+<section class="card" aria-labelledby="ad-up-h">
+<div class="card-head"><h2 id="ad-up-h">Next classes</h2><a class="card-sub" href="#/admin/classes">Manage classes</a></div>
+<ul class="list" id="a-upcoming"></ul>
+</section>
+<section class="card" aria-labelledby="ad-en-h">
+<div class="card-head"><h2 id="ad-en-h">Enrollment and payments</h2></div>
+<ul class="list" id="a-enroll"></ul>
+</section>
+<section class="card" aria-labelledby="ad-rc-h">
+<div class="card-head"><h2 id="ad-rc-h">Latest registrations</h2><a class="card-sub" href="#/admin/users">View all</a></div>
+<ul class="list" id="a-recent"></ul>
+</section>
+</div>
+</section>
+
+<!-- Registered users -->
+<section class="panel" data-panel="users" aria-label="Registered users" hidden>
+<div class="toolbar">
+<div class="field">
+<svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
+<input id="u-search" type="search" placeholder="Search name, registration or phone" aria-label="Search students" autocomplete="off" spellcheck="false">
+</div>
+<select class="sel" id="u-filter" aria-label="Filter by payment">
+<option value="all">All payments</option>
+<option value="pending">Pending or partial</option>
+<option value="paid">Fully PAID</option>
+</select>
+<button type="button" class="mini" id="u-export">EXPORT CSV</button>
+</div>
+<p class="card-sub" id="u-count" aria-live="polite"></p>
+<ul class="ulist" id="u-list"></ul>
+</section>
+
+<!-- Classes -->
+<section class="panel" data-panel="classes" aria-label="Classes" hidden>
+<div class="toolbar">
+<button type="button" class="btn auto" id="c-add" aria-expanded="false" aria-controls="class-card">ADD CLASS</button>
+<select class="sel" id="c-filter" aria-label="Filter classes">
+<option value="all">All classes</option>
+<option value="scheduled">Scheduled</option>
+<option value="live">Live</option>
+<option value="ended">Ended</option>
+</select>
+</div>
+<section class="card form-card" id="class-card" aria-labelledby="class-h" hidden>
+<div class="card-head"><h2 id="class-h">Add a class</h2><span class="card-sub">Times are East Africa Time</span></div>
+<form id="class-form" novalidate>
+<div class="group">
+<label for="cl-course">Course</label>
+<div class="field">
+<select id="cl-course" name="course" required aria-describedby="cl-course-err"></select>
+<svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+<p class="err" id="cl-course-err" role="alert" hidden></p>
+</div>
+<div class="frow">
+<div class="group">
+<label for="cl-date">Date</label>
+<div class="field"><input id="cl-date" name="date" type="date" aria-describedby="cl-date-err"></div>
+<p class="err" id="cl-date-err" role="alert" hidden></p>
+</div>
+<div class="group">
+<label for="cl-time">Time</label>
+<div class="field"><input id="cl-time" name="time" type="time" aria-describedby="cl-time-err"></div>
+<p class="err" id="cl-time-err" role="alert" hidden></p>
+</div>
+</div>
+<div class="group">
+<label for="cl-link">Link</label>
+<div class="field"><input id="cl-link" name="link" type="url" inputmode="url" autocomplete="off" spellcheck="false" placeholder="https://meet.google.com/..." aria-describedby="cl-link-err"></div>
+<p class="err" id="cl-link-err" role="alert" hidden></p>
+</div>
+<div class="group">
+<label for="cl-dur">Duration (minutes)</label>
+<div class="field"><input id="cl-dur" name="duration" type="number" inputmode="numeric" min="15" max="480" step="1" value="60" aria-describedby="cl-dur-err"></div>
+<p class="err" id="cl-dur-err" role="alert" hidden></p>
+</div>
+<p class="formmsg" id="cl-msg" role="alert" hidden></p>
+<div class="btn-row">
+<button type="button" class="btn secondary" id="cl-cancel">CANCEL</button>
+<button type="submit" class="btn" id="cl-submit" disabled>SAVE LESSON</button>
+</div>
+</form>
+</section>
+<ul class="ulist" id="c-list"></ul>
+</section>
+
+<!-- Attendance -->
+<section class="panel" data-panel="attendance" aria-label="Attendance" hidden>
+<div class="toolbar">
+<select class="sel" id="t-session" aria-label="Choose a class" style="flex:1 1 240px"></select>
+<button type="button" class="mini" id="t-export">EXPORT CSV</button>
+</div>
+<div class="grid2">
+<section class="card" aria-labelledby="t-p-h">
+<div class="card-head"><h2 id="t-p-h">Joined</h2><span class="card-sub" id="t-p-n"></span></div>
+<ul class="list" id="t-present"></ul>
+</section>
+<section class="card" aria-labelledby="t-a-h">
+<div class="card-head"><h2 id="t-a-h">Not joined</h2><span class="card-sub" id="t-a-n"></span></div>
+<ul class="list" id="t-absent"></ul>
+</section>
+</div>
+</section>
+</main>
+</section>
+
 <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
 
 <!-- Pure formatting and validation rules (no DOM, no network) -->
@@ -514,7 +755,7 @@ const state = {
   session: null, student: null, draftOk: false,
   courseList: DEFAULT_COURSES.slice(), selected: new Set(),
   myCourses: [], live: [], history: [], sessions: [], histAll: false, ld: { c: false, s: false, h: false }, tick: null,
-  channel: null, dashUid: null, timers: {}
+  channel: null, dashUid: null, timers: {}, links: {}, isAdmin: null, a: null
 };
 
 if (!window.supabase) {
@@ -754,8 +995,8 @@ function bindForm(formId) {
 }
 
 /* ------------------------------ routing ------------------------------ */
-const VIEWS = { signin: 'view-signin', signup1: 'view-signup1', signup2: 'view-signup2', dashboard: 'view-dash' };
-const TITLES = { signin: 'Sign in · HashCLASS', signup1: 'Sign up · HashCLASS', signup2: 'Courses and payment · HashCLASS', dashboard: 'Dashboard · HashCLASS' };
+const VIEWS = { signin: 'view-signin', signup1: 'view-signup1', signup2: 'view-signup2', dashboard: 'view-dash', 'admin-signin': 'view-admin-signin', admin: 'view-admin' };
+const TITLES = { signin: 'Sign in · HashCLASS', signup1: 'Sign up · HashCLASS', signup2: 'Courses and payment · HashCLASS', dashboard: 'Dashboard · HashCLASS', 'admin-signin': 'Admin sign in · HashCLASS', admin: 'Admin · HashCLASS' };
 
 function show(name) {
   Object.entries(VIEWS).forEach(([k, id]) => { $(id).hidden = k !== name; });
@@ -779,15 +1020,26 @@ async function loadStudent() {
   state.student = data || null;
 }
 async function route() {
-  const name = location.hash.replace(/^#\//, '') || 'signin';
+  const parts = (location.hash.replace(/^#\//, '') || 'signin').split('/');
+  const name = parts[0], sub = parts[1];
   const authed = !!state.session;
+  if (name === 'admin') {
+    if (!authed) return go('admin-signin');
+    if (!(await ensureRole())) { toast('That area is for the lecturer only.'); return go('signin'); }
+    if (!TABS[sub]) return go('admin/dashboard');
+    return enterAdmin(sub);
+  }
+  if (name === 'admin-signin' && authed && (await ensureRole())) return go('admin/dashboard');
   if (name === 'dashboard') {
     if (!authed) return go('signin');
+    if (await ensureRole()) return go('admin/dashboard');
+    teardownAdmin();
     if (!state.student) await loadStudent();
     if (!state.student) { toast('Your registration is not finished. Please register again.'); return go('signup1'); }
     return enterDashboard();
   }
   if ((name === 'signin' || name === 'signup1') && authed) {
+    if (await ensureRole()) return go('admin/dashboard');
     await loadStudent();
     if (state.student) return go('dashboard');
   }
@@ -796,6 +1048,7 @@ async function route() {
     renderCourses();
   }
   teardownDashboard();
+  teardownAdmin();
   show(VIEWS[name] ? name : 'signin');
 }
 
@@ -972,7 +1225,7 @@ function initials(name) {
 }
 const attendedIds = () => new Set(state.history.map((a) => a.session_id));
 const upcoming = () => state.sessions
-  .filter((x) => x.status === 'scheduled' && new Date(x.starts_at).getTime() > Date.now() - 864e5)
+  .filter((x) => x.status === 'scheduled' && new Date(x.starts_at).getTime() + (x.duration_minutes || 60) * 60000 > Date.now())
   .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))
   .slice(0, 6);
 const heldFor = (code) => state.sessions.filter((x) => x.course_code === code && (x.status === 'live' || x.status === 'ended'));
@@ -994,20 +1247,38 @@ async function enterDashboard() {
 }
 async function refreshCourses() {
   const { data, error } = await sb.from('registrations').select('course_code, price_tzs, payment_status').order('course_code');
+  const wasLoaded = state.ld.c;
   state.ld.c = true;
   if (error) console.error('courses read failed', error);
-  else state.myCourses = (data || []).filter((r) => r && r.course_code);
+  else {
+    const before = new Map(state.myCourses.map((r) => [r.course_code, r.payment_status]));
+    state.myCourses = (data || []).filter((r) => r && r.course_code);
+    if (wasLoaded) state.myCourses.forEach((r) => {
+      if (r.payment_status === 'paid' && before.has(r.course_code) && before.get(r.course_code) !== 'paid') toast('Payment received for ' + r.course_code + '. It is now marked PAID.');
+    });
+  }
   renderDash();
 }
 async function refreshSessions() {
   const { data, error } = await sb.from('class_sessions')
-    .select('id, course_code, title, status, starts_at, ends_at, meeting_url')
+    .select('id, course_code, title, status, starts_at, ends_at, started_at, duration_minutes')
     .order('starts_at', { ascending: false }).limit(200);
+  const wasLoaded = state.ld.s;
+  const wasLive = new Set(state.live.map((x) => x.id));
   state.ld.s = true;
   if (error) console.error('sessions read failed', error);
   else {
     state.sessions = (data || []).filter((r) => r && r.id);
     state.live = state.sessions.filter((r) => r.status === 'live');
+    // The class link is only readable while the class is live (enforced by the database)
+    state.links = {};
+    if (state.live.length) {
+      const res = await sb.from('class_links').select('session_id, meeting_url').in('session_id', state.live.map((x) => x.id));
+      if (res.error) console.error('class link read failed', res.error);
+      else (res.data || []).forEach((l) => { state.links[l.session_id] = l.meeting_url; });
+    }
+    const started = state.live.filter((x) => !wasLive.has(x.id));
+    if (wasLoaded && started.length) toast(started[0].course_code + ' class has started. Tap JOIN CLASS.');
   }
   renderDash();
 }
@@ -1041,7 +1312,7 @@ function teardownDashboard() {
   clearInterval(state.tick); state.tick = null;
   state.dashUid = null;
   // forget the last student's data so the next one never sees it
-  state.myCourses = []; state.sessions = []; state.live = []; state.history = [];
+  state.myCourses = []; state.sessions = []; state.live = []; state.history = []; state.links = {};
   state.histAll = false; state.ld = { c: false, s: false, h: false };
   $('conn').classList.remove('on');
   $('conn-t').textContent = 'Connecting';
@@ -1052,26 +1323,28 @@ function renderDash() {
 }
 function renderJoin() {
   const s = state.live[0], card = $('join'), btn = $('join-btn'), link = $('join-link');
+  const next = s ? null : upcoming()[0];
   card.classList.toggle('live', !!s);
   $('join-dot').classList.toggle('on', !!s);
-  $('join-eyebrow').textContent = s ? 'LIVE NOW' : 'NO CLASS LIVE';
+  $('join-eyebrow').textContent = s ? 'LIVE NOW' : next ? 'NEXT CLASS' : 'NO CLASS SCHEDULED';
   btn.setAttribute('aria-disabled', s ? 'false' : 'true');
+  if (!btn.hasAttribute('aria-busy')) { btn.textContent = s ? 'JOIN CLASS' : 'NOT STARTED'; delete btn.dataset.label; }
   if (!s) {
-    const next = upcoming()[0];
-    $('join-time').textContent = '';
-    $('join-class').textContent = next ? 'Next: ' + next.course_code + (next.title ? ' · ' + next.title : '') : 'Waiting for the next class';
+    $('join-time').textContent = next ? 'Duration ' + durText(next) : '';
+    $('join-class').textContent = next ? next.course_code + (next.title ? ' · ' + next.title : '') : 'Waiting for the next class';
     $('join-status').textContent = next
-      ? DAY.format(new Date(next.starts_at)) + ' at ' + CLOCK.format(new Date(next.starts_at)) + ' (' + rel(next.starts_at) + '). This page updates the moment a class goes live.'
-      : 'This page updates the moment your lecturer starts a class.';
+      ? DAY.format(new Date(next.starts_at)) + ' at ' + CLOCK.format(new Date(next.starts_at)) + ' (' + rel(next.starts_at) + '). Your lecturer has not started this class yet. This button changes to JOIN CLASS the moment it starts.'
+      : 'No class has been scheduled yet. This page updates the moment your lecturer adds or starts one.';
     link.hidden = true;
     return;
   }
   const joined = attendedIds().has(s.id);
   const extra = state.live.length > 1 ? ' ' + (state.live.length - 1) + ' more class' + (state.live.length > 2 ? 'es are' : ' is') + ' live.' : '';
-  $('join-time').textContent = 'Started ' + CLOCK.format(new Date(s.starts_at)) + ' · ' + rel(s.starts_at);
+  const began = s.started_at || s.starts_at;
+  $('join-time').textContent = 'Started ' + CLOCK.format(new Date(began)) + ' · ' + rel(began);
   $('join-class').textContent = s.course_code + (s.title ? ' · ' + s.title : '');
-  $('join-status').textContent = (joined ? 'You are marked present.' : 'Tap JOIN CLASS to be marked present and enter the class.') + extra;
-  const url = safeUrl(s.meeting_url);
+  $('join-status').textContent = (joined ? 'You are marked present. ' : 'Tap JOIN CLASS to be marked present and enter the class. ') + 'Duration ' + durText(s) + '.' + extra;
+  const url = safeUrl(state.links[s.id]);
   link.hidden = !url;
   if (url) link.href = url;
 }
@@ -1079,18 +1352,21 @@ async function onJoin() {
   const btn = $('join-btn');
   if (btn.hasAttribute('aria-busy')) return;
   const s = state.live[0];
-  if (!s) { toast('No class is live right now. This page updates the moment one starts.'); return; }
+  if (!s) { toast('This class has not started yet. This button changes to JOIN CLASS the moment your lecturer starts it.'); return; }
   setBusy(btn, true, 'Joining…');
   try {
+    let url = safeUrl(state.links[s.id]);
+    if (!url) { await refreshSessions(); url = safeUrl(state.links[s.id]); }
+    if (!url) { toast('The class link is not available yet. Please try again in a moment.'); return; }
     const { error } = await sb.from('attendance')
       .upsert({ session_id: s.id, student_id: state.session.user.id }, { onConflict: 'session_id,student_id', ignoreDuplicates: true });
     if (error) { console.error('join failed', error); toast('We could not join the class. Please try again.'); return; }
-    toast("You're marked present for " + s.course_code + '.');
-    const url = safeUrl(s.meeting_url);
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+    toast("You're marked present for " + s.course_code + '. Opening the class…');
+    window.open(url, '_blank', 'noopener,noreferrer');
     refreshHistory();
   } finally {
     setBusy(btn, false);
+    renderJoin();
   }
 }
 function renderStats() {
@@ -1116,7 +1392,7 @@ function renderUpcoming() {
       h('span', { class: 'datechip' }, h('b', { text: DOM.format(d) }), h('span', { text: MON.format(d) })),
       h('div', { class: 'main' },
         h('div', { class: 't', text: x.course_code + (x.title ? ' · ' + x.title : '') }),
-        h('div', { class: 's', text: DAY.format(d) + ' · ' + CLOCK.format(d) })),
+        h('div', { class: 's', text: DAY.format(d) + ' · ' + CLOCK.format(d) + ' · ' + durText(x) })),
       h('span', { class: 'pill soft', text: d.getTime() <= Date.now() ? 'Due now' : rel(x.starts_at) }));
   }));
 }
@@ -1139,7 +1415,7 @@ function renderCourseRows() {
         h('div', { class: 'main' },
           h('div', { class: 't', text: F.money(c.price_tzs) }),
           h('div', { class: 's', text: held.length ? n + ' of ' + held.length + (held.length === 1 ? ' class' : ' classes') + ' attended' : 'No classes held yet' })),
-        h('span', { class: 'pill ' + (paid ? 'ok' : 'warn'), text: paid ? 'Paid' : 'Payment pending' })),
+        h('span', { class: 'pill ' + (paid ? 'ok' : 'warn'), text: paid ? 'PAID' : 'Payment pending' })),
       h('div', { class: 'bar', role: 'progressbar', 'aria-label': c.course_code + ' attendance', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(pct) },
         h('i', { style: 'width:' + pct + '%' })));
   }));
@@ -1180,6 +1456,525 @@ async function onSignOut() {
   }
 }
 
+/* ======================= ROLE, ADMIN SIGN IN AND ADMIN PANEL =======================
+   The admin is a normal Supabase user (lecturer@hashclass.app) listed in the admins table.
+   The Position field is only a label. What actually protects the data is Row Level Security:
+   every admin policy checks is_admin() on the server (see supabase-admin.sql). */
+const ADMIN_EMAIL = 'lecturer@hashclass.app';
+const TABS = { dashboard: 'Dashboard', users: 'Registered users', classes: 'Classes', attendance: 'Attendance' };
+const blankAdmin = () => ({
+  uid: null, booted: false, tab: 'dashboard', students: [], regs: [], sessions: [], links: {}, att: [],
+  ld: false, channel: null, tick: null, q: '', pay: 'all', cls: 'all', attSession: ''
+});
+state.a = blankAdmin();
+
+async function loadRole() {
+  state.isAdmin = false;
+  if (!state.session) return;
+  const { data, error } = await sb.from('admins').select('id').eq('id', state.session.user.id).maybeSingle();
+  if (error) console.error('role read failed', error);
+  state.isAdmin = !!data;
+}
+async function ensureRole() {
+  if (state.isAdmin === null) await loadRole();
+  return state.isAdmin;
+}
+
+/* ---- small helpers ---- */
+const sum = (list, f) => list.reduce((n, x) => n + (f(x) || 0), 0);
+const kv = (k, v) => h('div', { class: 'kv' }, h('span', { class: 'k', text: k }), h('span', { class: 'v', text: v }));
+const emptyLi = (title, text) => h('li', { class: 'empty' }, h('strong', { text: title }), text);
+const statBox = (v, l) => h('div', { class: 'stat' }, h('div', { class: 'stat-v', text: v }), h('div', { class: 'stat-l', text: l }));
+const hostOf = (u) => { try { return new URL(u).hostname; } catch (e) { return u; } };
+const durText = (s) => (s.duration_minutes || 60) + ' min';
+const sessionEnd = (s) => new Date(s.starts_at).getTime() + (s.duration_minutes || 60) * 60000;
+const todayStr = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
+const classLabel = (s) => s.course_code + (s.title ? ' · ' + s.title : '');
+const money0 = (n) => Number(n).toLocaleString('en-US');
+const dateChip = (iso) => { const d = new Date(iso); return h('span', { class: 'datechip' }, h('b', { text: DOM.format(d) }), h('span', { text: MON.format(d) })); };
+const regsOf = (studentId) => state.a.regs.filter((r) => r.student_id === studentId);
+function payState(rs) {
+  if (!rs.length) return 'none';
+  const paid = rs.filter((r) => r.payment_status === 'paid').length;
+  return paid === rs.length ? 'paid' : paid === 0 ? 'pending' : 'partial';
+}
+const PAY_PILL = { paid: ['ok', 'PAID'], partial: ['warn', 'PARTIAL'], pending: ['warn', 'PENDING'], none: ['soft', 'NO COURSES'] };
+
+function csvCell(v) {
+  let s = String(v == null ? '' : v);
+  if (/^[=@\-\t\r]/.test(s)) s = "'" + s;   // stops spreadsheet apps treating text as a formula
+  return '"' + s.replace(/"/g, '""') + '"';
+}
+function downloadCsv(name, rows) {
+  const blob = new Blob(['﻿' + rows.map((r) => r.map(csvCell).join(',')).join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const a = h('a', { href: url, download: name });
+  document.body.append(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1500);
+}
+
+/* ---- forms: admin sign in and add class ---- */
+function classStart() {
+  return new Date($('cl-date').value + 'T' + $('cl-time').value + ':00+03:00').getTime();   // Dar es Salaam is UTC+3 all year
+}
+Object.assign(FORMS, {
+  'admin-form': {
+    btn: 'ad-submit', msg: 'ad-msg', fields: ['ad-pos', 'ad-pass'],
+    check() {
+      const p = {};
+      if ($('ad-pos').value !== 'Tutorial Lecturer') p['ad-pos'] = 'Select your position.';
+      if (!$('ad-pass').value) p['ad-pass'] = 'Enter your password.';
+      return p;
+    }
+  },
+  'class-form': {
+    btn: 'cl-submit', msg: 'cl-msg', fields: ['cl-course', 'cl-date', 'cl-time', 'cl-link', 'cl-dur'],
+    check() {
+      const p = {};
+      if (!$('cl-course').value) p['cl-course'] = 'Select a course.';
+      const d = $('cl-date').value, t = $('cl-time').value;
+      if (!d) p['cl-date'] = 'Choose the date.';
+      else if (d < todayStr()) p['cl-date'] = 'Choose today or a later date.';
+      if (!t) p['cl-time'] = 'Choose the start time.';
+      else if (d && !p['cl-date'] && classStart() < Date.now() - 5 * 60000) p['cl-time'] = 'That time has already passed. Choose a later time.';
+      if (!/^https:\/\/[^\s/]+\.[^\s/]+\S*$/i.test($('cl-link').value.trim())) p['cl-link'] = 'Enter the full class link, starting with https://';
+      const n = Number($('cl-dur').value);
+      if (!$('cl-dur').value || !Number.isInteger(n) || n < 15 || n > 480) p['cl-dur'] = 'Enter a whole number of minutes from 15 to 480.';
+      return p;
+    }
+  }
+});
+
+/* ---- admin sign in / out ---- */
+async function onAdminSignIn(e) {
+  e.preventDefault();
+  const btn = $('ad-submit');
+  if (btn.hasAttribute('aria-busy')) return;
+  const problems = update('admin-form', true);
+  if (Object.keys(problems).length) { focusFirstProblem('admin-form', problems); return; }
+
+  setMsg('ad-msg', '');
+  setBusy(btn, true, 'Signing in…');
+  try {
+    const { data, error } = await sb.auth.signInWithPassword({ email: ADMIN_EMAIL, password: $('ad-pass').value });
+    if (error) {
+      console.error('admin sign in failed', error);
+      if (/invalid login/i.test(error.message)) {
+        serverErr['admin-form'] = { 'ad-pass': 'Incorrect password.' };
+        update('admin-form');
+        $('ad-pass').focus();
+      } else {
+        setMsg('ad-msg', problemText(error, 'sign you in'));
+      }
+      return;
+    }
+    state.session = data.session;
+    state.student = null;
+    state.isAdmin = null;
+    if (!(await ensureRole())) {
+      await sb.auth.signOut();
+      state.session = null;
+      setMsg('ad-msg', 'The admin account is not set up in the database yet. Run supabase-admin.sql in Supabase, then try again.');
+      return;
+    }
+    $('ad-pass').value = '';
+    go('admin/dashboard');
+  } finally {
+    setBusy(btn, false, '', 'admin-form');
+  }
+}
+async function onAdminSignOut() {
+  const btn = $('a-signout');
+  if (btn.hasAttribute('aria-busy')) return;
+  setBusy(btn, true, 'Signing out…');
+  try {
+    teardownAdmin();
+    await sb.auth.signOut();
+    state.session = null; state.student = null; state.isAdmin = null;
+    go('signin');
+  } finally {
+    setBusy(btn, false);
+  }
+}
+
+/* ---- loading and live updates ---- */
+async function refreshAdmin() {
+  const a = state.a;
+  const [st, rg, se, li, at] = await Promise.all([
+    sb.from('students').select('id, full_name, reg_number, year_of_study, payment_number, payment_name, created_at').order('created_at', { ascending: false }).limit(5000),
+    sb.from('registrations').select('id, student_id, course_code, price_tzs, payment_status').limit(10000),
+    sb.from('class_sessions').select('id, course_code, title, status, starts_at, ends_at, started_at, duration_minutes').order('starts_at', { ascending: false }).limit(500),
+    sb.from('class_links').select('session_id, meeting_url').limit(1000),
+    sb.from('attendance').select('id, session_id, student_id, joined_at').order('joined_at', { ascending: true }).limit(10000)
+  ]);
+  if (state.a !== a) return;   // signed out while loading
+  const bad = [st, rg, se, li, at].find((r) => r.error);
+  if (bad) { console.error('admin read failed', bad.error); toast(problemText(bad.error, 'load the admin data')); }
+  if (!st.error) a.students = st.data || [];
+  if (!rg.error) a.regs = rg.data || [];
+  if (!se.error) a.sessions = se.data || [];
+  if (!li.error) a.links = Object.fromEntries((li.data || []).map((l) => [l.session_id, l.meeting_url]));
+  if (!at.error) a.att = at.data || [];
+  a.ld = true;
+  renderAdmin();
+}
+async function refreshAdminRegs() {
+  const a = state.a;
+  const { data, error } = await sb.from('registrations').select('id, student_id, course_code, price_tzs, payment_status').limit(10000);
+  if (state.a !== a) return;
+  if (error) { console.error('registrations read failed', error); return; }
+  a.regs = data || [];
+  renderAdmin();
+}
+function subscribeAdmin(uid) {
+  const a = state.a;
+  const kick = () => debounce('adm', refreshAdmin, 250);
+  a.channel = sb.channel('hc-admin-' + uid);
+  ['students', 'registrations', 'class_sessions', 'attendance'].forEach((table) => {
+    a.channel.on('postgres_changes', { event: '*', schema: 'public', table }, kick);
+  });
+  a.channel.subscribe((status) => {
+    const on = status === 'SUBSCRIBED';
+    $('a-conn').classList.toggle('on', on);
+    $('a-conn-t').textContent = on ? 'Live updates' : (status === 'CLOSED' ? 'Offline' : 'Reconnecting');
+    if (on) refreshAdmin();
+  });
+}
+function teardownAdmin() {
+  const a = state.a;
+  if (a) { if (a.channel) sb.removeChannel(a.channel); clearInterval(a.tick); }
+  state.a = blankAdmin();
+  $('a-conn').classList.remove('on');
+  $('a-conn-t').textContent = 'Connecting';
+  $('u-search').value = ''; $('u-filter').value = 'all'; $('c-filter').value = 'all';
+  $('class-card').hidden = true; $('c-add').setAttribute('aria-expanded', 'false');
+}
+async function enterAdmin(tab) {
+  teardownDashboard();
+  const uid = state.session.user.id;
+  if (state.a.uid && state.a.uid !== uid) teardownAdmin();
+  const a = state.a;
+  a.uid = uid;
+  a.tab = tab;
+  show('admin');
+  renderAdminShell();
+  if (a.booted) return;
+  a.booted = true;
+  populateCourseSelect();
+  renderAdmin();
+  await Promise.all([refreshAdmin(), loadCourseList().then(populateCourseSelect)]);
+  if (state.a !== a) return;
+  subscribeAdmin(uid);
+  a.tick = setInterval(() => { renderAdminDash(); renderClasses(); }, 30000);   // keeps "in 2 h" and "12 min ago" fresh
+}
+function renderAdminShell() {
+  const tab = state.a.tab;
+  document.querySelectorAll('.adm-nav a').forEach((link) => {
+    if (link.dataset.tab === tab) { link.setAttribute('aria-current', 'page'); try { link.scrollIntoView({ block: 'nearest', inline: 'center' }); } catch (e) {} }
+    else link.removeAttribute('aria-current');
+  });
+  document.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== tab; });
+  $('adm-title').textContent = TABS[tab];
+  document.title = TABS[tab] + ' · HashCLASS Admin';
+}
+function populateCourseSelect() {
+  const sel = $('cl-course'), cur = sel.value;
+  sel.replaceChildren(
+    h('option', { value: '', disabled: true, selected: !cur, text: 'Select course' }),
+    ...state.courseList.map((c) => h('option', { value: c.code, selected: cur === c.code, text: c.code }))
+  );
+}
+
+/* ---- actions ---- */
+async function setPayment(ids, status, btn, busyLabel) {
+  if (!ids.length || btn.hasAttribute('aria-busy')) return;
+  setBusy(btn, true, busyLabel);
+  const { error } = await sb.from('registrations').update({ payment_status: status }).in('id', ids);
+  setBusy(btn, false);
+  if (error) { console.error('payment update failed', error); toast(problemText(error, 'save the payment')); return; }
+  toast(status === 'paid' ? 'Marked as PAID. The student sees it straight away.' : 'Marked as unpaid.');
+  await refreshAdminRegs();
+}
+async function startClass(s, btn) {
+  if (btn.hasAttribute('aria-busy')) return;
+  setBusy(btn, true, 'Starting…');
+  const { error } = await sb.from('class_sessions').update({ status: 'live', started_at: new Date().toISOString() }).eq('id', s.id).eq('status', 'scheduled');
+  setBusy(btn, false);
+  if (error) { console.error('start failed', error); toast(problemText(error, 'start the class')); return; }
+  toast(s.course_code + ' is live. Students can join now.');
+  await refreshAdmin();
+}
+async function endClass(s, btn) {
+  if (btn.hasAttribute('aria-busy')) return;
+  if (!confirm('End the ' + s.course_code + ' class now? Students will no longer be able to join.')) return;
+  setBusy(btn, true, 'Ending…');
+  const { error } = await sb.from('class_sessions').update({ status: 'ended', ends_at: new Date().toISOString() }).eq('id', s.id).eq('status', 'live');
+  setBusy(btn, false);
+  if (error) { console.error('end failed', error); toast(problemText(error, 'end the class')); return; }
+  toast(s.course_code + ' class ended.');
+  await refreshAdmin();
+}
+async function deleteClass(s, btn) {
+  if (btn.hasAttribute('aria-busy')) return;
+  if (!confirm('Delete this ' + s.course_code + ' class and its attendance records? This cannot be undone.')) return;
+  setBusy(btn, true, 'Deleting…');
+  const { error } = await sb.from('class_sessions').delete().eq('id', s.id);
+  setBusy(btn, false);
+  if (error) { console.error('delete failed', error); toast(problemText(error, 'delete the class')); return; }
+  toast('Class deleted.');
+  await refreshAdmin();
+}
+function toggleClassForm(open) {
+  const card = $('class-card');
+  const want = typeof open === 'boolean' ? open : card.hidden;
+  card.hidden = !want;
+  $('c-add').setAttribute('aria-expanded', String(want));
+  if (want) {
+    $('cl-date').min = todayStr();
+    updateAll();
+    card.scrollIntoView({ block: 'nearest' });
+    $('cl-course').focus();
+  }
+}
+async function onSaveClass(e) {
+  e.preventDefault();
+  const btn = $('cl-submit');
+  if (btn.hasAttribute('aria-busy')) return;
+  const problems = update('class-form', true);
+  if (Object.keys(problems).length) { focusFirstProblem('class-form', problems); return; }
+
+  setMsg('cl-msg', '');
+  setBusy(btn, true, 'Saving…');
+  $('cl-cancel').disabled = true;
+  try {
+    const { error } = await sb.rpc('admin_create_class', {
+      p_course: $('cl-course').value,
+      p_starts_at: new Date(classStart()).toISOString(),
+      p_duration: Number($('cl-dur').value),
+      p_link: $('cl-link').value.trim()
+    });
+    if (error) {
+      console.error('save class failed', error);
+      setMsg('cl-msg', /admin_create_class|schema cache|does not exist/i.test(error.message)
+        ? 'The admin part of the database is not set up yet. Run supabase-admin.sql in Supabase, then try again.'
+        : problemText(error, 'save the lesson'));
+      return;
+    }
+    $('class-form').reset();
+    FORMS['class-form'].fields.forEach((id) => touched.delete(id));
+    toggleClassForm(false);
+    toast('Lesson saved. Press START CLASS when you are ready to begin.');
+    await refreshAdmin();
+  } finally {
+    $('cl-cancel').disabled = false;
+    setBusy(btn, false, '', 'class-form');
+  }
+}
+
+/* ---- rendering ---- */
+function renderAdmin() {
+  renderAdminDash(); renderUsers(); renderClasses(); renderAttendance();
+}
+function classButtons(s, opts) {
+  const a = state.a, box = h('div', { class: 'actions' });
+  const url = safeUrl(a.links[s.id]);
+  if (s.status === 'scheduled') box.append(h('button', { type: 'button', class: 'mini start', text: 'START CLASS', onclick: (e) => startClass(s, e.currentTarget) }));
+  if (s.status === 'live') {
+    if (url) box.append(h('a', { class: 'mini primary', href: url, target: '_blank', rel: 'noopener noreferrer', text: 'OPEN LINK' }));
+    box.append(h('button', { type: 'button', class: 'mini danger', text: 'END CLASS', onclick: (e) => endClass(s, e.currentTarget) }));
+  }
+  if (opts && opts.del && s.status !== 'live') box.append(h('button', { type: 'button', class: 'mini danger', text: 'DELETE', onclick: (e) => deleteClass(s, e.currentTarget) }));
+  return box;
+}
+function renderAdminDash() {
+  const a = state.a;
+  const live = a.sessions.filter((x) => x.status === 'live');
+  const banner = $('a-live');
+  banner.hidden = !live.length;
+  banner.replaceChildren(...live.map((s) => {
+    const joined = a.att.filter((x) => x.session_id === s.id).length;
+    return h('div', { class: 'lb-row' },
+      h('div', { class: 'lb-t' }, h('span', { class: 'dot on' }), h('span', { text: 'LIVE NOW · ' + s.course_code })),
+      h('div', { class: 's', text: joined + ' joined · started ' + CLOCK.format(new Date(s.started_at || s.starts_at)) }),
+      classButtons(s));
+  }));
+
+  const paid = sum(a.regs.filter((r) => r.payment_status === 'paid'), (r) => r.price_tzs);
+  const pending = sum(a.regs.filter((r) => r.payment_status !== 'paid'), (r) => r.price_tzs);
+  const L = a.ld;
+  $('a-stats').replaceChildren(
+    statBox(L ? String(a.students.length) : '–', 'Registered students'),
+    statBox(L ? money0(paid) : '–', 'Collected (TZS)'),
+    statBox(L ? money0(pending) : '–', 'Pending (TZS)'),
+    statBox(L ? String(a.sessions.length) : '–', 'Classes'),
+    statBox(L ? String(live.length) : '–', 'Live now'));
+
+  const up = a.sessions.filter((x) => x.status === 'scheduled' && sessionEnd(x) > Date.now())
+    .sort((x, y) => new Date(x.starts_at) - new Date(y.starts_at)).slice(0, 5);
+  $('a-upcoming').replaceChildren(...(!L ? [loadingRow()] : up.length ? up.map((s) => {
+    const d = new Date(s.starts_at);
+    return h('li', { class: 'item crow' },
+      h('div', { class: 'row1' },
+        dateChip(s.starts_at),
+        h('div', { class: 'main' },
+          h('div', { class: 't', text: classLabel(s) }),
+          h('div', { class: 's', text: DAY.format(d) + ' · ' + CLOCK.format(d) + ' · ' + durText(s) })),
+        h('span', { class: 'pill soft', text: d.getTime() <= Date.now() ? 'Due now' : rel(s.starts_at) })),
+      classButtons(s));
+  }) : [emptyLi('No classes scheduled', 'Add one from the Classes tab.')]));
+
+  $('a-enroll').replaceChildren(...(!L ? [loadingRow()] : state.courseList.map((c) => {
+    const rs = a.regs.filter((r) => r.course_code === c.code);
+    const p = rs.filter((r) => r.payment_status === 'paid').length;
+    const pct = rs.length ? Math.round((100 * p) / rs.length) : 0;
+    return h('li', { class: 'item crow' },
+      h('div', { class: 'row1' },
+        h('span', { class: 'badge', text: c.code }),
+        h('div', { class: 'main' },
+          h('div', { class: 't', text: rs.length + (rs.length === 1 ? ' student' : ' students') }),
+          h('div', { class: 's', text: p + ' paid · ' + (rs.length - p) + ' pending' }))),
+      h('div', { class: 'bar', role: 'progressbar', 'aria-label': c.code + ' paid share', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(pct) }, h('i', { style: 'width:' + pct + '%' })));
+  })));
+
+  const recent = a.students.slice(0, 5);
+  $('a-recent').replaceChildren(...(!L ? [loadingRow()] : recent.length ? recent.map((s) => {
+    const [cls, label] = PAY_PILL[payState(regsOf(s.id))];
+    return h('li', { class: 'item' },
+      h('span', { class: 'avatar', style: 'width:34px;height:34px;font-size:12px;background:var(--brand-soft);color:var(--brand-deep);border-color:transparent', text: initials(s.full_name) }),
+      h('div', { class: 'main' },
+        h('div', { class: 't', text: s.full_name }),
+        h('div', { class: 's', text: s.reg_number + ' · ' + SHORT.format(new Date(s.created_at)) })),
+      h('span', { class: 'pill ' + cls, text: label }));
+  }) : [emptyLi('No students yet', 'New registrations appear here as they happen.')]));
+}
+
+function filteredStudents() {
+  const a = state.a;
+  return a.students.filter((s) => {
+    if (a.q && !(s.full_name.toLowerCase().includes(a.q) || s.reg_number.toLowerCase().includes(a.q) || s.payment_number.includes(a.q))) return false;
+    const st = payState(regsOf(s.id));
+    if (a.pay === 'paid') return st === 'paid';
+    if (a.pay === 'pending') return st === 'pending' || st === 'partial';
+    return true;
+  });
+}
+function userCard(s) {
+  const rs = regsOf(s.id).slice().sort((x, y) => x.course_code.localeCompare(y.course_code));
+  const st = payState(rs), [pcls, plabel] = PAY_PILL[st];
+  const pend = rs.filter((r) => r.payment_status !== 'paid');
+  const total = sum(rs, (r) => r.price_tzs), paid = sum(rs.filter((r) => r.payment_status === 'paid'), (r) => r.price_tzs);
+  const actions = h('div', { class: 'actions' });
+  if (pend.length) actions.append(h('button', { type: 'button', class: 'mini primary', text: pend.length > 1 ? 'MARK ALL PAID' : 'MARK PAID', onclick: (e) => setPayment(pend.map((r) => r.id), 'paid', e.currentTarget, 'Saving…') }));
+  if (rs.length && !pend.length) actions.append(h('button', { type: 'button', class: 'mini', text: 'MARK UNPAID', onclick: (e) => { if (confirm('Mark all of ' + s.full_name + "'s courses as unpaid?")) setPayment(rs.map((r) => r.id), 'pending', e.currentTarget, 'Saving…'); } }));
+  return h('li', { class: 'ucard' },
+    h('div', { class: 'row1' },
+      h('span', { class: 'avatar', 'aria-hidden': 'true', text: initials(s.full_name) }),
+      h('div', { class: 'main' },
+        h('div', { class: 't', text: s.full_name }),
+        h('div', { class: 's', text: s.reg_number + ' · ' + (s.year_of_study === 2 ? 'Second Year' : 'Year ' + s.year_of_study) })),
+      h('span', { class: 'pill ' + pcls, text: plabel })),
+    kv('Payment number', s.payment_number),
+    kv('Payment name', s.payment_name),
+    kv('Registered', SHORT.format(new Date(s.created_at))),
+    kv('Fees paid', 'TZS ' + money0(paid) + ' of ' + money0(total)),
+    h('div', {}, ...rs.map((r) => h('div', { class: 'crs-row' },
+      h('span', { class: 'badge', text: r.course_code }),
+      h('div', { class: 'main' }, h('div', { class: 's', text: F.money(r.price_tzs) })),
+      h('span', { class: 'pill ' + (r.payment_status === 'paid' ? 'ok' : 'warn'), text: r.payment_status === 'paid' ? 'PAID' : 'Pending' }),
+      h('button', { type: 'button', class: 'mini sm', text: r.payment_status === 'paid' ? 'UNDO' : 'MARK PAID', 'aria-label': (r.payment_status === 'paid' ? 'Undo payment for ' : 'Mark paid for ') + r.course_code + ', ' + s.full_name,
+        onclick: (e) => setPayment([r.id], r.payment_status === 'paid' ? 'pending' : 'paid', e.currentTarget, '…') })))),
+    actions);
+}
+function renderUsers() {
+  const a = state.a, ul = $('u-list');
+  if (!a.ld) { ul.replaceChildren(loadingRow()); $('u-count').textContent = ''; return; }
+  const list = filteredStudents();
+  $('u-count').textContent = list.length + (list.length === 1 ? ' student' : ' students') + (list.length !== a.students.length ? ' of ' + a.students.length : '');
+  ul.replaceChildren(...(list.length ? list.map(userCard) : [emptyLi(a.students.length ? 'No matches' : 'No students yet', a.students.length ? 'Try a different search or filter.' : 'Students appear here as soon as they register.')]));
+}
+function exportUsers() {
+  const rows = [['Full name', 'Registration number', 'Year', 'Payment number', 'Payment name', 'Courses', 'Fees TZS', 'Paid TZS', 'Status', 'Registered']];
+  filteredStudents().forEach((s) => {
+    const rs = regsOf(s.id);
+    rows.push([s.full_name, s.reg_number, s.year_of_study, s.payment_number, s.payment_name, rs.map((r) => r.course_code).join(' '),
+      sum(rs, (r) => r.price_tzs), sum(rs.filter((r) => r.payment_status === 'paid'), (r) => r.price_tzs), PAY_PILL[payState(rs)][1], new Date(s.created_at).toISOString()]);
+  });
+  downloadCsv('hashclass-students-' + todayStr() + '.csv', rows);
+}
+
+function renderClasses() {
+  const a = state.a, ul = $('c-list');
+  if (!a.ld) { ul.replaceChildren(loadingRow()); return; }
+  const rank = { live: 0, scheduled: 1, ended: 2 };
+  const list = a.sessions.filter((x) => a.cls === 'all' || x.status === a.cls).sort((x, y) => {
+    if (rank[x.status] !== rank[y.status]) return rank[x.status] - rank[y.status];
+    const diff = new Date(x.starts_at) - new Date(y.starts_at);
+    return x.status === 'scheduled' ? diff : -diff;
+  });
+  ul.replaceChildren(...(list.length ? list.map((s) => {
+    const d = new Date(s.starts_at);
+    const joined = a.att.filter((x) => x.session_id === s.id).length;
+    const enrolled = a.regs.filter((r) => r.course_code === s.course_code).length;
+    const url = safeUrl(a.links[s.id]);
+    const pill = s.status === 'live' ? h('span', { class: 'pill live', text: 'LIVE' })
+      : s.status === 'ended' ? h('span', { class: 'pill soft', text: 'ENDED' })
+      : h('span', { class: 'pill soft', text: sessionEnd(s) <= Date.now() ? 'MISSED' : 'SCHEDULED' });
+    return h('li', { class: 'ucard' },
+      h('div', { class: 'row1' },
+        dateChip(s.starts_at),
+        h('div', { class: 'main' },
+          h('div', { class: 't', text: classLabel(s) }),
+          h('div', { class: 's', text: DAY.format(d) + ' · ' + CLOCK.format(d) + ' · ' + durText(s) })),
+        pill),
+      kv('Link', url ? hostOf(url) : 'No link'),
+      kv('Attendance', s.status === 'scheduled' ? enrolled + (enrolled === 1 ? ' student enrolled' : ' students enrolled') : joined + ' of ' + enrolled + ' joined'),
+      classButtons(s, { del: true }));
+  }) : [emptyLi(a.sessions.length ? 'No classes here' : 'No classes yet', a.sessions.length ? 'Try another filter.' : 'Press ADD CLASS to schedule the first one.')]));
+}
+
+function attendanceFor(sessionId) {
+  const a = state.a, s = a.sessions.find((x) => x.id === sessionId);
+  if (!s) return null;
+  const byId = new Map(a.students.map((x) => [x.id, x]));
+  const present = a.att.filter((x) => x.session_id === sessionId).map((x) => ({ st: byId.get(x.student_id), at: x.joined_at })).filter((x) => x.st);
+  const here = new Set(present.map((x) => x.st.id));
+  const absent = a.regs.filter((r) => r.course_code === s.course_code).map((r) => byId.get(r.student_id)).filter((st) => st && !here.has(st.id))
+    .sort((x, y) => x.full_name.localeCompare(y.full_name));
+  return { s, present, absent };
+}
+function renderAttendance() {
+  const a = state.a, sel = $('t-session');
+  const list = a.sessions.filter((x) => x.status !== 'scheduled').sort((x, y) => new Date(y.starts_at) - new Date(x.starts_at));
+  if (!list.some((x) => x.id === a.attSession)) a.attSession = list[0] ? list[0].id : '';
+  sel.replaceChildren(...(list.length ? list.map((s) => h('option', { value: s.id, selected: s.id === a.attSession, text: s.course_code + ' · ' + DAY.format(new Date(s.starts_at)) + ' ' + CLOCK.format(new Date(s.starts_at)) + (s.status === 'live' ? ' · LIVE' : '') }))
+    : [h('option', { value: '', text: 'No classes held yet' })]));
+  sel.value = a.attSession;
+  const res = a.attSession ? attendanceFor(a.attSession) : null;
+  if (!a.ld) { $('t-present').replaceChildren(loadingRow()); $('t-absent').replaceChildren(loadingRow()); return; }
+  if (!res) {
+    $('t-present').replaceChildren(emptyLi('Nothing to show', 'Start a class and the students who join appear here.'));
+    $('t-absent').replaceChildren(emptyLi('Nothing to show', 'Students who have not joined appear here.'));
+    $('t-p-n').textContent = ''; $('t-a-n').textContent = '';
+    return;
+  }
+  $('t-p-n').textContent = String(res.present.length);
+  $('t-a-n').textContent = String(res.absent.length);
+  $('t-present').replaceChildren(...(res.present.length ? res.present.map((x) => h('li', { class: 'item' },
+    h('div', { class: 'main' }, h('div', { class: 't', text: x.st.full_name }), h('div', { class: 's', text: x.st.reg_number })),
+    h('span', { class: 'pill ok', text: CLOCK.format(new Date(x.at)) }))) : [emptyLi('Nobody has joined yet', 'This list updates live.')]));
+  $('t-absent').replaceChildren(...(res.absent.length ? res.absent.map((st) => h('li', { class: 'item' },
+    h('div', { class: 'main' }, h('div', { class: 't', text: st.full_name }), h('div', { class: 's', text: st.reg_number })),
+    h('span', { class: 'pill warn', text: res.s.status === 'live' ? 'Not yet' : 'Absent' }))) : [emptyLi('Everyone joined', 'All enrolled students are present.')]));
+}
+function exportAttendance() {
+  const res = state.a.attSession ? attendanceFor(state.a.attSession) : null;
+  if (!res) { toast('Choose a class that has been held first.'); return; }
+  const rows = [['Full name', 'Registration number', 'Status', 'Joined at (EAT)']];
+  res.present.forEach((x) => rows.push([x.st.full_name, x.st.reg_number, 'Present', SHORT.format(new Date(x.at))]));
+  res.absent.forEach((st) => rows.push([st.full_name, st.reg_number, 'Absent', '']));
+  downloadCsv('hashclass-attendance-' + res.s.course_code + '-' + res.s.starts_at.slice(0, 10) + '.csv', rows);
+}
+
 /* ------------------------------- boot ------------------------------- */
 [['si-reg', bindReg], ['su-reg', bindReg], ['su-name', bindName], ['su-payname', bindName], ['su-pay', bindPay]].forEach(([id, fn]) => fn($(id)));
 document.querySelectorAll('[data-eye]').forEach(bindEye);
@@ -1191,12 +1986,23 @@ $('su2-back').addEventListener('click', () => go('signup1'));
 $('join-btn').addEventListener('click', onJoin);
 $('hist-more').addEventListener('click', () => { state.histAll = !state.histAll; renderHistory(); });
 $('signout').addEventListener('click', onSignOut);
+$('admin-form').addEventListener('submit', onAdminSignIn);
+$('class-form').addEventListener('submit', onSaveClass);
+$('c-add').addEventListener('click', toggleClassForm);
+$('cl-cancel').addEventListener('click', () => toggleClassForm(false));
+$('a-signout').addEventListener('click', onAdminSignOut);
+$('u-search').addEventListener('input', (e) => { state.a.q = e.target.value.trim().toLowerCase(); renderUsers(); });
+$('u-filter').addEventListener('change', (e) => { state.a.pay = e.target.value; renderUsers(); });
+$('u-export').addEventListener('click', exportUsers);
+$('c-filter').addEventListener('change', (e) => { state.a.cls = e.target.value; renderClasses(); });
+$('t-session').addEventListener('change', (e) => { state.a.attSession = e.target.value; renderAttendance(); });
+$('t-export').addEventListener('click', exportAttendance);
 window.addEventListener('hashchange', route);
 window.addEventListener('pageshow', updateAll);
 
 sb.auth.onAuthStateChange((event, session) => {
   state.session = session;
-  if (event === 'SIGNED_OUT') setTimeout(() => { teardownDashboard(); state.student = null; if (location.hash === '#/dashboard') go('signin'); }, 0);
+  if (event === 'SIGNED_OUT') setTimeout(() => { teardownDashboard(); teardownAdmin(); state.student = null; state.isAdmin = null; if (location.hash === '#/dashboard') go('signin'); else if (location.hash.indexOf('#/admin/') === 0) go('admin-signin'); }, 0);
 });
 
 (async () => {
