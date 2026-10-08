@@ -1302,9 +1302,20 @@ function show(name) {
   $('boot').hidden = true;
   document.title = TITLES[name];
   window.scrollTo(0, 0);
+  resetAuthForms(name);
   updateAll();
   const head = $(VIEWS[name]).querySelector('h1');
   if (head) head.focus({ preventScroll: true });
+}
+function resetAuthForms(name) {
+  if (name !== 'signin') {
+    $('si-pass').value = ''; touched.delete('si-pass'); touched.delete('si-reg'); delete serverErr['signin-form'];
+    const b = $('si-submit'); if (b.hasAttribute('aria-busy')) setBusy(b, false);
+  }
+  if (name !== 'admin-signin') {
+    $('ad-pass').value = ''; touched.delete('ad-pass'); touched.delete('ad-pos'); delete serverErr['admin-form'];
+    const b = $('ad-submit'); if (b.hasAttribute('aria-busy')) setBusy(b, false);
+  }
 }
 function go(name) {
   if (location.hash === '#/' + name) route();
@@ -1380,6 +1391,7 @@ async function onSignIn(e) {
 
   setMsg('si-msg', '');
   setBusy(btn, true, 'Signing in…');
+  let keepBusy = false;
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email: regToEmail($('si-reg').value), password: $('si-pass').value });
     if (error) {
@@ -1394,10 +1406,10 @@ async function onSignIn(e) {
       return;
     }
     state.session = data.session;
-    $('si-pass').value = '';
+    keepBusy = true;   // keep the spinner until the dashboard replaces this screen
     go('dashboard');
   } finally {
-    setBusy(btn, false, '', 'signin-form');
+    if (!keepBusy) setBusy(btn, false, '', 'signin-form');
   }
 }
 
@@ -1542,8 +1554,10 @@ function initials(name) {
   return ((p[0] || '')[0] || '') + ((p.length > 1 ? p[p.length - 1] : '')[0] || '');
 }
 const attendedIds = () => new Set(state.history.map((a) => a.session_id));
+// Only the student's own registered courses count: classes of other courses are never shown
+const enrolled = (code) => state.myCourses.some((r) => r.course_code === code);
 const upcoming = () => state.sessions
-  .filter((x) => x.status === 'scheduled' && new Date(x.starts_at).getTime() + (x.duration_minutes || 60) * 60000 > Date.now())
+  .filter((x) => enrolled(x.course_code) && x.status === 'scheduled' && new Date(x.starts_at).getTime() + (x.duration_minutes || 60) * 60000 > Date.now())
   .sort((a, b) => new Date(a.starts_at) - new Date(b.starts_at))
   .slice(0, 6);
 const heldFor = (code) => state.sessions.filter((x) => x.course_code === code && (x.status === 'live' || x.status === 'ended'));
@@ -1563,50 +1577,67 @@ async function enterDashboard() {
   clearInterval(state.tick);
   state.tick = setInterval(() => { renderJoin(); renderUpcoming(); }, 30000);   // keeps "12 min ago" and "in 2 h" fresh
 }
+// Live classes of the student's own courses, with their links. Returns the classes that just became live.
+async function syncLive() {
+  const wasLive = new Set(state.live.map((x) => x.id));
+  const nowLive = state.sessions.filter((r) => r.status === 'live' && enrolled(r.course_code));
+  const links = {};
+  // The class link is only readable while the class is live (enforced by the database)
+  if (nowLive.length) {
+    const res = await sb.from('class_links').select('session_id, meeting_url').in('session_id', nowLive.map((x) => x.id));
+    if (res.error) console.error('class link read failed', res.error);
+    else (res.data || []).forEach((l) => { links[l.session_id] = l.meeting_url; });
+  }
+  state.live = nowLive; state.links = links;
+  return nowLive.filter((x) => !wasLive.has(x.id));
+}
+const myId = () => (state.session && state.session.user ? state.session.user.id : null);
 async function refreshCourses() {
-  const { data, error } = await sb.from('registrations').select('course_code, price_tzs, payment_status').order('course_code');
+  const uid = myId();
+  if (!uid) return;
+  const { data, error } = await sb.from('registrations').select('student_id, course_code, price_tzs, payment_status').eq('student_id', uid).order('course_code');
+  if (myId() !== uid) return;   // signed out or switched account while loading
   const wasLoaded = state.ld.c;
   state.ld.c = true;
   if (error) console.error('courses read failed', error);
   else {
     const before = new Map(state.myCourses.map((r) => [r.course_code, r.payment_status]));
-    state.myCourses = (data || []).filter((r) => r && r.course_code);
+    state.myCourses = (data || []).filter((r) => r && r.course_code && r.student_id === uid);
     if (wasLoaded) state.myCourses.forEach((r) => {
       if (r.payment_status === 'paid' && before.has(r.course_code) && before.get(r.course_code) !== 'paid') toast('Payment received for ' + r.course_code + '. It is now marked PAID.');
     });
+    if (state.ld.s) await syncLive();
   }
   renderDash();
 }
 async function refreshSessions() {
+  const uid = myId();
+  if (!uid) return;
   const { data, error } = await sb.from('class_sessions')
     .select('id, course_code, title, status, starts_at, ends_at, started_at, duration_minutes')
     .order('starts_at', { ascending: false }).limit(200);
+  if (myId() !== uid) return;
   const wasLoaded = state.ld.s;
-  const wasLive = new Set(state.live.map((x) => x.id));
   state.ld.s = true;
   if (error) console.error('sessions read failed', error);
   else {
     state.sessions = (data || []).filter((r) => r && r.id);
-    state.live = state.sessions.filter((r) => r.status === 'live');
-    // The class link is only readable while the class is live (enforced by the database)
-    state.links = {};
-    if (state.live.length) {
-      const res = await sb.from('class_links').select('session_id, meeting_url').in('session_id', state.live.map((x) => x.id));
-      if (res.error) console.error('class link read failed', res.error);
-      else (res.data || []).forEach((l) => { state.links[l.session_id] = l.meeting_url; });
-    }
-    const started = state.live.filter((x) => !wasLive.has(x.id));
+    const started = await syncLive();
     if (wasLoaded && started.length) toast(started[0].course_code + ' class has started. Tap JOIN CLASS.');
   }
   renderDash();
 }
 async function refreshHistory() {
+  const uid = myId();
+  if (!uid) return;
   const { data, error } = await sb.from('attendance')
-    .select('id, joined_at, session_id, class_sessions(course_code, title, starts_at)')
+    .select('id, student_id, joined_at, session_id, class_sessions(course_code, title, starts_at)')
+    .eq('student_id', uid)
     .order('joined_at', { ascending: false }).limit(50);
+  if (myId() !== uid) return;
   state.ld.h = true;
   if (error) console.error('history read failed', error);
-  else state.history = (data || []).filter((a) => a && a.session_id);
+  else state.history = (data || []).filter((a) => a && a.session_id && a.student_id === uid);
   renderDash();
 }
 function subscribe(uid) {
@@ -1722,7 +1753,7 @@ function renderStats() {
 }
 function renderUpcoming() {
   const ul = $('upcoming');
-  if (!state.ld.s) { ul.replaceChildren(loadingRow()); return; }
+  if (!state.ld.s || !state.ld.c) { ul.replaceChildren(loadingRow()); return; }
   const list = upcoming();
   if (!list.length) {
     const li = h('li', { class: 'empty empty-rich' }, h('span', { class: 'eil' }), h('div', {}, h('strong', { text: 'No classes scheduled' }), 'Classes your lecturer schedules will appear here.'));
@@ -1904,6 +1935,7 @@ async function onAdminSignIn(e) {
 
   setMsg('ad-msg', '');
   setBusy(btn, true, 'Signing in…');
+  let keepBusy = false;
   try {
     const { data, error } = await sb.auth.signInWithPassword({ email: ADMIN_EMAIL, password: $('ad-pass').value });
     if (error) {
@@ -1926,10 +1958,10 @@ async function onAdminSignIn(e) {
       setMsg('ad-msg', 'The admin account is not set up in the database yet. Run supabase-admin.sql in Supabase, then try again.');
       return;
     }
-    $('ad-pass').value = '';
+    keepBusy = true;
     go('admin/dashboard');
   } finally {
-    setBusy(btn, false, '', 'admin-form');
+    if (!keepBusy) setBusy(btn, false, '', 'admin-form');
   }
 }
 async function onAdminSignOut() {
@@ -2360,7 +2392,9 @@ sb.auth.onAuthStateChange((event, session) => {
   const { data } = await sb.auth.getSession();
   state.session = data.session;
   if (state.session) await loadStudent();
-  if (!location.hash) location.hash = state.student ? '#/dashboard' : '#/signin';
+  let seen = false;   // has this browser opened the link before?
+  try { seen = localStorage.getItem('hc_seen') === '1'; localStorage.setItem('hc_seen', '1'); } catch (e) {}
+  if (!location.hash) location.hash = state.student ? '#/dashboard' : seen ? '#/signin' : '#/signup1';
   else route();
 })();
 })();
