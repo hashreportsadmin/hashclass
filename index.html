@@ -7,7 +7,7 @@
 <title>HashCLASS</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Caveat:wght@600&display=swap">
 <style>
 :root{
   --ink:#1F2433; --muted:#5B6275; --line:#E3E5EC; --field:#F8F9FC; --surface:#FFFFFF; --canvas:#F3F2FB;
@@ -92,7 +92,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .su-step{font-size:12px;font-weight:600;color:var(--muted);white-space:nowrap}
 /* Same stacked header as the sign-in screen. The illustration takes whatever height is left on the phone, up to its full sign-in size. */
 .auth.tight .hero{padding:calc(18px + env(safe-area-inset-top,0px)) 20px 16px}
-.auth.tight .hero .illus{width:clamp(0px,calc((100vh - 675px) * 1.158),220px);width:clamp(0px,calc((100dvh - 675px) * 1.158),220px);flex-shrink:0}   /* leaves room for an error line or two */
+.auth.tight .hero .illus{width:clamp(0px,calc((100vh - 697px) * 1.158),220px);width:clamp(0px,calc((100dvh - 697px) * 1.158),220px);flex-shrink:0}   /* leaves room for an error line or two */
 .auth.tight .sheet{padding:14px 20px calc(10px + env(safe-area-inset-bottom,0px));gap:12px;border-radius:24px 24px 0 0}
 .auth.tight .steps{margin-top:6px}
 .auth.tight form{gap:10px}
@@ -107,8 +107,8 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .auth.tight .course input{width:20px;height:20px}
 .auth.tight .switch{font-size:13px}
 .auth.tight .switch a{padding:8px 2px}
-@media (max-height:743px){.auth.tight .hero .illus{display:none}}   /* too little room left to show it at a useful size */
-@media (max-height:660px){.auth.tight .hero{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px}}
+@media (max-height:765px){.auth.tight .hero .illus{display:none}}   /* too little room left to show it at a useful size */
+@media (max-height:682px){.auth.tight .hero{padding-top:calc(10px + env(safe-area-inset-top,0px));padding-bottom:10px}}
 
 /* ---------- Dashboard ---------- */
 .dash-wrap{min-height:100vh;background:var(--canvas);font-size:13px;line-height:1.4}
@@ -205,6 +205,19 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .btn.auto{width:auto;flex:0 0 auto;height:42px;padding:0 18px;font-size:13px;box-shadow:none}
 .join-btn[aria-disabled="true"]{cursor:not-allowed;background:rgba(255,255,255,.78)}
 
+/* ---------- Join button states: red (not started / not paid), green + pulsing (can join) ---------- */
+.join .join-btn[data-state="idle"],.join .join-btn[data-state="unpaid"]{background:#D93A4B;color:#fff;cursor:not-allowed;animation:none;box-shadow:0 8px 20px rgba(120,10,30,.35)}
+.join .join-btn[data-state="idle"]:hover,.join .join-btn[data-state="unpaid"]:hover{background:#D93A4B}
+.join .join-btn[data-state="wait"]{animation:none}
+.join .join-btn[data-state="ready"]{background:#16A34A;color:#fff;cursor:pointer;animation:ringgreen 1.6s infinite;box-shadow:0 8px 20px rgba(5,80,35,.4)}
+.join .join-btn[data-state="ready"]:hover:not(:disabled){background:#15803D}
+.join .join-btn[data-state="ready"][aria-busy="true"]::before{border-color:rgba(255,255,255,.4);border-top-color:#fff}
+@keyframes ringgreen{0%{box-shadow:0 8px 20px rgba(5,80,35,.4),0 0 0 0 rgba(74,222,128,.75)}70%{box-shadow:0 8px 20px rgba(5,80,35,.4),0 0 0 14px rgba(74,222,128,0)}100%{box-shadow:0 8px 20px rgba(5,80,35,.4),0 0 0 0 rgba(74,222,128,0)}}
+/* turns over backwards once when it becomes the red "YOU HAVE NOT PAID" button */
+.join .join-btn.flip{animation:flipback .8s ease-in-out 1}
+@keyframes flipback{from{transform:perspective(600px) rotateX(0)}to{transform:perspective(600px) rotateX(-360deg)}}
+@media (prefers-reduced-motion:reduce){.join .join-btn[data-state="ready"],.join .join-btn.flip{animation:none}}
+
 /* ---------- Admin panel ---------- */
 .adm{min-height:100vh;background:var(--canvas);font-size:13px;line-height:1.4}
 .adm-top{background:linear-gradient(180deg,#3B2BB0 0%,#4A38C6 100%);color:#fff}
@@ -259,6 +272,122 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
   .ulist{grid-template-columns:repeat(2,minmax(0,1fr))}
   .adm-main{padding-left:24px;padding-right:24px}
 }
+
+/* ---------- Taglines on the sign-in / sign-up screens ---------- */
+.tagline.sub2{margin-top:5px;font-size:11.5px;font-weight:500;letter-spacing:.34em;color:rgba(255,255,255,.7)}
+
+/* ---------- Brand logo (shared by student dashboard and admin panel) ---------- */
+.ic{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+.logo-mark{width:34px;height:34px;border-radius:10px;background:none;overflow:hidden;display:block}
+.logo-mark svg{display:block;width:100%;height:100%}
+
+/* ---------- Registration success popup ---------- */
+.reg-pop{position:fixed;inset:0;z-index:40;display:grid;place-items:center;padding:24px;background:rgba(20,16,60,.38);animation:fadein .2s ease}
+.reg-pop.out{animation:fadeout .2s ease forwards}
+.reg-card{display:flex;flex-direction:column;align-items:center;gap:10px;width:min(100%,300px);padding:28px 28px 26px;border-radius:24px;background:linear-gradient(160deg,#E7F8EE,#C9EEDA);border:1.5px solid #8FD9B2;box-shadow:0 22px 50px rgba(5,80,35,.32);text-align:center;color:#0B5A37;animation:popin .38s cubic-bezier(.2,1.3,.4,1)}
+.reg-card svg{width:76px;height:76px}
+.reg-card svg circle{fill:#16A34A}
+.reg-card svg path{fill:none;stroke:#fff;stroke-width:5.5;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:tick .45s .3s ease forwards}
+.reg-card h3{font-size:19px;font-weight:700}
+.reg-card p{font-size:13.5px;line-height:1.4;color:#2F7A57}
+@keyframes tick{to{stroke-dashoffset:0}}
+@keyframes popin{from{opacity:0;transform:scale(.8)}to{opacity:1;transform:scale(1)}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@keyframes fadeout{to{opacity:0}}
+@media (prefers-reduced-motion:reduce){.reg-card,.reg-card svg path{animation-duration:.01s}}
+
+/* ---------- Student dashboard redesign ---------- */
+#view-dash{font-size:14px;line-height:1.4;background:linear-gradient(180deg,#F3F2FB 0%,#F3F2FB 78%,#E8E4FB 100%)}
+#view-dash .dash-head{background:radial-gradient(110% 90% at 100% 0%,rgba(143,123,255,.38),transparent 62%),radial-gradient(70% 60% at 0% 100%,rgba(30,20,120,.35),transparent 70%),linear-gradient(180deg,#3B2BB0 0%,#4A38C6 55%,#5440D6 100%);border-radius:0 0 50% 50%/0 0 34px 34px}
+#view-dash .top{padding-top:calc(14px + env(safe-area-inset-top,0px));padding-bottom:6px}
+#view-dash .logo{gap:10px}
+#view-dash .logo-mark{width:42px;height:42px;border-radius:12px;box-shadow:0 6px 16px rgba(20,10,80,.35)}
+#view-dash .logo-name{font-size:20px;font-weight:700;letter-spacing:-.01em}
+#view-dash .conn{padding:7px 12px;font-size:12px}
+.bell{position:relative;flex-shrink:0;width:42px;height:42px;display:grid;place-items:center;padding:0;border:0;border-radius:50%;background:transparent;color:#fff;cursor:pointer}
+.bell:hover{background:rgba(255,255,255,.14)}
+.bell .ic{width:23px;height:23px}
+.bell-dot{position:absolute;top:8px;right:9px;width:10px;height:10px;border-radius:50%;background:#FF6B6B;border:2px solid #4A38C6}
+#view-dash .signout{display:inline-flex;align-items:center;gap:8px;min-height:42px;padding:0 15px;border-radius:999px;font-size:13px}
+#view-dash .signout .ic{width:18px;height:18px}
+#view-dash .me-row{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:10px 0 20px}
+#view-dash .me{padding:0;gap:14px;min-width:0}
+#view-dash .avatar{width:60px;height:60px;font-size:20px;background:radial-gradient(circle at 30% 25%,#8F7BFF,#5440D6);border:2px solid rgba(255,255,255,.4);box-shadow:0 6px 16px rgba(20,10,80,.3)}
+#view-dash .me-hi{font-size:13px;opacity:.9}
+#view-dash .me h1{font-size:19px;line-height:1.2;letter-spacing:.01em;text-transform:uppercase}
+#view-dash .me-meta{display:flex;align-items:center;gap:6px;margin-top:4px;font-size:12.5px;opacity:.92}
+#view-dash .me-meta .ic{width:16px;height:16px}
+.motto{display:none;flex-shrink:0;text-align:right;color:#fff}
+.motto .script{font-family:'Caveat','Segoe Script','Brush Script MT',cursive;font-size:32px;line-height:1;font-weight:600;transform:rotate(-4deg)}
+.motto svg{display:block;width:150px;height:10px;margin:2px 0 4px auto}
+.motto-s{font-size:12px;opacity:.88;transform:rotate(-3deg)}
+@media (min-width:640px){.motto{display:block}}
+
+/* live / join card */
+#join,#join.live{position:relative;display:block;margin:6px 0 -64px;padding:18px;border-radius:22px;overflow:hidden;color:#fff;background:linear-gradient(135deg,#6C4DE6 0%,#7B63F0 55%,#8F7BFF 100%);border:1.5px solid rgba(255,255,255,.55);box-shadow:0 18px 40px rgba(40,25,140,.35)}
+#join .join-illus{position:absolute;right:8px;top:10px;width:120px;height:auto;pointer-events:none}
+#join .join-head{min-height:100px;padding-right:112px}
+#join .join-eyebrow{display:flex;align-items:center;gap:8px;font-size:12px;font-weight:700;letter-spacing:.14em}
+#join .join-kicker{margin-top:10px;font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;opacity:.8}
+#join .join-class{margin-top:2px;font-size:clamp(22px,7vw,32px);line-height:1.1;font-weight:800;letter-spacing:.01em;overflow-wrap:anywhere}
+#join .join-row{display:flex;align-items:flex-start;gap:9px;margin-top:8px;font-size:13.5px;line-height:1.45;color:rgba(255,255,255,.94)}
+#join .join-row .ic{width:18px;height:18px;margin-top:1px;opacity:.9}
+#join .join-row:has(#join-time:empty){display:none}
+#join .join-class.small{font-size:18px;font-weight:700;margin-top:10px}
+#join .join-rule{height:1px;margin:12px 0 2px;border:0;background:rgba(255,255,255,.28)}
+#join .join-status{font-size:13px;line-height:1.5;color:inherit}
+#join .join-btn{margin-top:14px;width:100%;max-width:340px;height:54px;padding:0 20px;gap:12px;border-radius:999px;font-size:16px;letter-spacing:.06em}
+#join .join-btn span{flex:1;text-align:center}
+@media (min-width:640px){
+  #join,#join.live{padding:22px 26px}
+  #join .join-illus{width:230px;right:22px;top:16px}
+  #join .join-head{min-height:0;padding-right:0}
+  #join .join-head,#join .join-rule,#join .join-row.st{max-width:58%}
+}
+
+/* summary cards */
+#view-dash .dash{padding-top:84px}
+#view-dash .stats{gap:10px}
+#view-dash .stat{appearance:none;-webkit-appearance:none;display:flex;align-items:center;gap:10px;min-height:76px;padding:12px;border-radius:16px;text-align:left;font:inherit;color:inherit;cursor:pointer;box-shadow:0 6px 16px rgba(60,40,160,.07)}
+#view-dash .stat:hover{box-shadow:0 8px 20px rgba(60,40,160,.14)}
+.stat-ic{flex-shrink:0;width:42px;height:42px;border-radius:50%;display:grid;place-items:center}
+.stat-ic .ic{width:22px;height:22px}
+.stat-tx{flex:1;min-width:0}
+#view-dash .stat-v{display:block;font-size:20px;line-height:1.15}
+#view-dash .stat-l{display:block;margin-top:2px;font-size:11.5px}
+.stat .chev{width:16px;height:16px;color:var(--muted)}
+.stat.c1{background:linear-gradient(135deg,#fff,#F3F0FF)}.stat.c1 .stat-ic{background:#E4DEFF;color:var(--brand-deep)}
+.stat.c2{background:linear-gradient(135deg,#fff,#EAF8F1)}.stat.c2 .stat-ic{background:#D3F0E2;color:var(--ok)}.stat.c2 .stat-v{color:var(--ok)}.stat.c2 .chev{color:var(--ok)}
+.stat.c3{background:linear-gradient(135deg,#fff,#FFF3EA)}.stat.c3 .stat-ic{background:#FFE2CF;color:#E8631A}.stat.c3 .stat-v{color:#C2500F}.stat.c3 .chev{color:#E8631A}
+@media (max-width:520px){
+  #view-dash .stat{flex-direction:column;align-items:flex-start;gap:8px}
+  .stat .chev{display:none}
+  .stat-ic{width:38px;height:38px}
+}
+
+/* section cards */
+#view-dash .card{gap:12px;padding:16px;border-radius:18px;box-shadow:0 8px 22px rgba(60,40,160,.06)}
+#view-dash .card-head{justify-content:flex-start;gap:10px}
+#view-dash .card-head h2{flex:1;min-width:0;font-size:17px}
+.cic{flex-shrink:0;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand)}
+.cic .ic{width:22px;height:22px}
+#view-dash .more{display:inline-flex;align-items:center;gap:2px;align-self:auto;min-height:36px;font-size:13px}
+#view-dash .more::after{content:"›";font-size:20px;line-height:1}
+.inbox{padding:4px 12px 10px;border:1px solid var(--line);border-radius:14px;background:#fff}
+.inbox .sum{margin-top:2px}
+#view-dash .empty-rich{display:flex;align-items:center;gap:16px;padding:14px 16px;border-radius:14px;background:linear-gradient(90deg,#EFEBFF,#F6F4FF);text-align:left}
+.empty-rich .eil{flex-shrink:0;width:92px}
+.empty-rich .eil svg{display:block;width:100%;height:auto}
+.empty-rich strong{font-size:15px}
+.dfoot{display:flex;align-items:center;justify-content:center;gap:10px;padding:0 16px calc(28px + env(safe-area-inset-bottom,0px));color:var(--brand-deep);font-size:12px;opacity:.85}
+.dfoot .ln{flex:0 1 70px;height:1px;background:#C9C1F2}
+.dfoot i{width:3px;height:3px;border-radius:50%;background:var(--brand)}
+@media (min-width:820px){#join,#join.live{max-width:none}}
+@media (max-width:440px){
+  #view-dash .conn #conn-t{display:none}
+  #view-dash .conn{padding:9px}
+  #view-dash .signout{padding:0 12px}
+}
 </style>
 </head>
 <body>
@@ -301,6 +430,54 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <ellipse cx="38" cy="156" rx="22" ry="12" fill="url(#hc-cloud)" fill-opacity="0.9"/>
 <ellipse cx="182" cy="156" rx="22" ry="12" fill="url(#hc-cloud)" fill-opacity="0.9"/>
 </g>
+<linearGradient id="hc-logo-g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#9A87FF"/><stop offset="1" stop-color="#4B38C9"/></linearGradient>
+<g id="hc-logo">
+<rect width="48" height="48" rx="14" fill="url(#hc-logo-g)"/>
+<path d="M15 19.5v5.2c0 1.7 4 3.3 9 3.3s9-1.6 9-3.3v-5.2l-9 4.4z" fill="#FFFFFF" fill-opacity="0.82"/>
+<polygon points="24,7.5 41,15.5 24,23.5 7,15.5" fill="#FFFFFF"/>
+<path d="M39.5 16.5v7" stroke="#FFB454" stroke-width="2" stroke-linecap="round"/>
+<path d="M19.2 31.2l-1.6 9.6M28.6 31.2l-1.6 9.6M15.6 34.4h19.2M14.8 38.2h19.2" stroke="#FFFFFF" stroke-width="2.6" stroke-linecap="round"/>
+</g>
+<g id="hc-live">
+<ellipse cx="140" cy="92" rx="112" ry="64" fill="#FFFFFF" fill-opacity="0.1"/>
+<path d="M196 18l1.8 6.2 6.2 1.8-6.2 1.8-1.8 6.2-1.8-6.2-6.2-1.8 6.2-1.8z" fill="#FFFFFF" fill-opacity="0.85"/>
+<path d="M62 30l-5 -7M70 26l-2 -8" stroke="#BFB4FF" stroke-width="2.4" stroke-linecap="round"/>
+<rect x="84" y="22" width="112" height="76" rx="7" fill="#2A2272" stroke="#EFEBFF" stroke-width="4"/>
+<rect x="90" y="28" width="100" height="64" rx="4" fill="#7B6CF0"/>
+<polygon points="128,45 128,75 154,60" fill="#FFFFFF"/>
+<path d="M68 98H212L205 112Q204 114 201 114H79Q76 114 75 112Z" fill="#E7E2FF"/>
+<rect x="126" y="98" width="28" height="3" rx="1.5" fill="#CFC7FA"/>
+<rect x="8" y="96" width="84" height="16" rx="3" fill="#3F58D8"/>
+<rect x="12" y="109" width="76" height="3" fill="#DCE3FF"/>
+<rect x="16" y="79" width="70" height="17" rx="3" fill="#5F7CFF"/>
+<rect x="20" y="93" width="62" height="3" fill="#E6EBFF"/>
+<ellipse cx="236" cy="70" rx="6" ry="17" fill="#2FBF8A"/>
+<ellipse cx="226" cy="78" rx="5.5" ry="13" fill="#25A87A" transform="rotate(-28 226 78)"/>
+<ellipse cx="247" cy="78" rx="5.5" ry="13" fill="#25A87A" transform="rotate(28 247 78)"/>
+<path d="M224 92h24l-3 22h-18z" fill="#EFEBFF"/>
+</g>
+<g id="hc-cal">
+<circle cx="56" cy="54" r="46" fill="#E4DEFF"/>
+<rect x="26" y="26" width="58" height="52" rx="8" fill="#FFFFFF" stroke="#6C4DE6" stroke-width="3"/>
+<path d="M26 34a8 8 0 0 1 8-8h42a8 8 0 0 1 8 8v6H26z" fill="#6C4DE6"/>
+<path d="M42 20v12M68 20v12" stroke="#6C4DE6" stroke-width="3.5" stroke-linecap="round"/>
+<rect x="34" y="47" width="9" height="9" rx="2" fill="#D8D0FF"/><rect x="48" y="47" width="9" height="9" rx="2" fill="#D8D0FF"/><rect x="62" y="47" width="9" height="9" rx="2" fill="#D8D0FF"/>
+<rect x="34" y="61" width="9" height="9" rx="2" fill="#D8D0FF"/><rect x="48" y="61" width="9" height="9" rx="2" fill="#D8D0FF"/>
+<circle cx="82" cy="80" r="15" fill="#FFFFFF" stroke="#6C4DE6" stroke-width="3"/>
+<path d="M82 72v8l5 3" fill="none" stroke="#6C4DE6" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+</g>
+<symbol id="i-bell" viewBox="0 0 24 24"><path d="M6 9a6 6 0 1 1 12 0c0 5 2 6.5 2 6.5H4S6 14 6 9z"/><path d="M10 19a2 2 0 0 0 4 0"/></symbol>
+<symbol id="i-out" viewBox="0 0 24 24"><path d="M14 4h4a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2h-4"/><path d="M10 8l-4 4 4 4"/><path d="M6 12h10"/></symbol>
+<symbol id="i-cal" viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M8 3v4M16 3v4M3.5 10h17"/></symbol>
+<symbol id="i-clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></symbol>
+<symbol id="i-info" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8v.01"/></symbol>
+<symbol id="i-book" viewBox="0 0 24 24"><path d="M12 6.5C10 5 7 4.5 4 5v13c3-.5 6 0 8 1.5 2-1.5 5-2 8-1.5V5c-3-.5-6 0-8 1.5z"/><path d="M12 6.5v13"/></symbol>
+<symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.5-3.3 2.8-5 5.5-5s5 1.7 5.5 5"/><circle cx="17" cy="9.5" r="2.3"/><path d="M16.5 14.2c2.4.2 3.6 1.7 4 4.3"/></symbol>
+<symbol id="i-wallet" viewBox="0 0 24 24"><path d="M4 8V6.5A2.5 2.5 0 0 1 6.5 4H18v4"/><rect x="4" y="8" width="16" height="11.5" rx="2.5"/><circle cx="16" cy="13.7" r="1.2"/></symbol>
+<symbol id="i-cap" viewBox="0 0 24 24"><path d="M2.5 9.5L12 5l9.5 4.5L12 14z"/><path d="M6.5 11.6v4.2c0 1.3 2.5 2.7 5.5 2.7s5.5-1.4 5.5-2.7v-4.2"/><path d="M21.5 9.5v5"/></symbol>
+<symbol id="i-chev" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+<symbol id="i-arrow" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+<symbol id="i-lock" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></symbol>
 </defs>
 </svg>
 
@@ -314,6 +491,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
 <h1 class="brand" tabindex="-1">HashCLASS</h1>
 <p class="tagline">SUPPLEMENTARY EXAMINATIONS</p>
+<p class="tagline sub2">ONLINE CLASSES</p>
 </header>
 <main class="sheet">
 <form id="signin-form" novalidate>
@@ -352,6 +530,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
 <h1 class="brand" tabindex="-1">HashCLASS</h1>
 <p class="tagline">SUPPLEMENTARY EXAMINATIONS</p>
+<p class="tagline sub2">ONLINE CLASSES</p>
 </header>
 <main class="sheet">
 <div>
@@ -412,6 +591,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <svg class="illus" viewBox="0 0 220 190" role="img" aria-label="Illustration of an online class on a laptop"><use href="#hc-illus"/></svg>
 <h1 class="brand" tabindex="-1">HashCLASS</h1>
 <p class="tagline">SUPPLEMENTARY EXAMINATIONS</p>
+<p class="tagline sub2">ONLINE CLASSES</p>
 </header>
 <main class="sheet">
 <div>
@@ -451,59 +631,73 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <div class="dash-head">
 <div class="wrap">
 <div class="top">
-<div class="logo"><span class="logo-mark" aria-hidden="true">#</span><span class="logo-name">HashCLASS<small>SUPPLEMENTARY EXAMINATIONS</small></span></div>
+<div class="logo"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><use href="#hc-logo"/></svg></span><span class="logo-name">HashCLASS</span></div>
 <div class="top-right">
 <span class="conn" id="conn"><span class="dot"></span><span id="conn-t">Connecting</span></span>
-<button type="button" class="signout" id="signout">Sign out</button>
+<button type="button" class="bell" id="bell" aria-label="Notifications"><svg class="ic" aria-hidden="true"><use href="#i-bell"/></svg><span class="bell-dot" id="bell-dot" hidden></span></button>
+<button type="button" class="signout" id="signout"><svg class="ic" aria-hidden="true"><use href="#i-out"/></svg><span>Sign out</span></button>
 </div>
 </div>
+<div class="me-row">
 <div class="me">
 <span class="avatar" id="d-avatar" aria-hidden="true"></span>
 <div class="me-t">
 <p class="me-hi">Welcome back</p>
 <h1 id="d-name" tabindex="-1"></h1>
-<p class="me-meta" id="d-meta"></p>
+<p class="me-meta"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg><span id="d-meta"></span></p>
+</div>
+</div>
+<div class="motto" aria-hidden="true">
+<p class="script">Keep going</p>
+<svg viewBox="0 0 160 10"><path d="M2 7 C 50 1, 110 2, 158 5" fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" opacity=".75"/></svg>
+<p class="motto-s">Your goals are within reach</p>
 </div>
 </div>
 <section class="join" id="join" aria-label="Join class">
-<div class="join-top">
+<svg class="join-illus" viewBox="0 0 260 160" aria-hidden="true"><use href="#hc-live"/></svg>
+<div class="join-head">
 <p class="join-eyebrow"><span class="dot" id="join-dot"></span><span id="join-eyebrow">NO CLASS LIVE</span></p>
-<span class="join-time" id="join-time"></span>
-</div>
+<p class="join-kicker" id="join-kicker" hidden>Course</p>
 <p class="join-class" id="join-class"></p>
+<p class="join-row"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg><span id="join-time"></span></p>
+</div>
+<hr class="join-rule">
+<p class="join-row st"><svg class="ic" aria-hidden="true"><use href="#i-info"/></svg><span class="join-status" id="join-status" aria-live="polite"></span></p>
 <button type="button" id="join-btn" class="join-btn" aria-describedby="join-status">JOIN CLASS</button>
-<p class="join-status" id="join-status" aria-live="polite"></p>
-<a id="join-link" class="join-link" target="_blank" rel="noopener noreferrer" hidden>Open classroom link</a>
 </section>
 </div>
 </div>
 
 <main class="dash">
 <section class="stats" aria-label="Summary">
-<div class="stat"><div class="stat-v" id="st-courses">–</div><div class="stat-l">Courses</div></div>
-<div class="stat"><div class="stat-v" id="st-attended">–</div><div class="stat-l">Classes attended</div></div>
-<div class="stat"><div class="stat-v" id="st-fees">–</div><div class="stat-l" id="st-fees-l">Fees</div></div>
+<button type="button" class="stat c1" data-go="card-courses"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-courses">–</span><span class="stat-l">Courses</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+<button type="button" class="stat c2" data-go="card-hist"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-attended">–</span><span class="stat-l">Classes attended</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+<button type="button" class="stat c3" data-go="card-courses"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-fees">–</span><span class="stat-l" id="st-fees-l">Fees</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
 </section>
 
-<section class="card up" aria-labelledby="up-h">
-<div class="card-head"><h2 id="up-h">Upcoming classes</h2></div>
+<section class="card up" id="card-up" aria-labelledby="up-h">
+<div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg></span><h2 id="up-h">Upcoming classes</h2></div>
 <ul class="list" id="upcoming"></ul>
 </section>
 
-<section class="card crs" aria-labelledby="mc-h">
-<div class="card-head"><h2 id="mc-h">My courses</h2></div>
+<section class="card crs" id="card-courses" aria-labelledby="mc-h">
+<div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-cap"/></svg></span><h2 id="mc-h">My courses</h2></div>
+<div class="inbox">
 <ul class="list" id="my-courses"></ul>
 <div class="sum" id="my-total" hidden><span>Total fees</span><span id="my-total-v"></span></div>
+</div>
 <p class="note" id="pay-note" hidden>Pending payments are marked as paid by the administrator once your payment is confirmed.</p>
 </section>
 
-<section class="card hist" aria-labelledby="hist-h">
-<div class="card-head"><h2 id="hist-h">Class history</h2><span class="card-sub" id="hist-count"></span></div>
+<section class="card hist" id="card-hist" aria-labelledby="hist-h">
+<div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><h2 id="hist-h">Class history</h2><span class="card-sub" id="hist-count"></span><button type="button" class="more" id="hist-more" hidden></button></div>
+<div class="inbox">
 <ul class="list" id="history"></ul>
 <div class="empty" id="history-empty" hidden><strong>No classes attended yet</strong>When you join a live class it shows up here straight away.</div>
-<button type="button" class="more" id="hist-more" hidden></button>
+</div>
 </section>
 </main>
+<footer class="dfoot" aria-hidden="true"><span class="ln"></span><span>Learn</span><i></i><span>Grow</span><i></i><span>Succeed</span><span class="ln"></span></footer>
 </section>
 
 <!-- ================= ADMIN SIGN IN ================= -->
@@ -554,7 +748,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <header class="adm-top">
 <div class="wrap">
 <div class="adm-bar">
-<div class="logo"><span class="logo-mark" aria-hidden="true">#</span><span class="logo-name">HashCLASS<small>ADMIN PANEL</small></span></div>
+<div class="logo"><span class="logo-mark" aria-hidden="true"><svg viewBox="0 0 48 48"><use href="#hc-logo"/></svg></span><span class="logo-name">HashCLASS<small>ADMIN PANEL</small></span></div>
 <div class="top-right">
 <span class="conn" id="a-conn"><span class="dot"></span><span id="a-conn-t">Connecting</span></span>
 <button type="button" class="signout" id="a-signout">Sign out</button>
@@ -1152,6 +1346,23 @@ function backToDetailsWithRegError() {
   update('signup1-form');
   $('su-reg').focus();
 }
+function resetSignup() {
+  $('signup1-form').reset(); $('signup2-form').reset();
+  state.selected.clear();
+  ['su-name', 'su-reg', 'su-year', 'su-pass', 'su-pass2', 'su-pay', 'su-payname', 'courses'].forEach((id) => touched.delete(id));
+  delete serverErr['signup1-form']; delete serverErr['signup2-form'];
+  $('su-reg').dataset.prev = ''; $('su-pay').dataset.prev = '';
+  document.querySelectorAll('#course-list input').forEach((i) => { i.checked = false; });
+  updateTotal();
+}
+// Greenish ticking popup that closes itself after 2 seconds
+function showRegistered() {
+  const pop = h('div', { class: 'reg-pop', role: 'status' });
+  pop.innerHTML = '<div class="reg-card"><svg viewBox="0 0 80 80" aria-hidden="true"><circle cx="40" cy="40" r="38"/><path d="M24 41l11 11 21-23"/></svg><h3>Registered</h3><p>Your registration is complete. Please sign in.</p></div>';
+  document.body.append(pop);
+  setTimeout(() => pop.classList.add('out'), 1800);
+  setTimeout(() => pop.remove(), 2000);
+}
 async function onRegister(e) {
   e.preventDefault();
   const btn = $('su2-submit');
@@ -1192,11 +1403,13 @@ async function onRegister(e) {
       setMsg('su2-msg', problemText(rpcErr, 'save your registration'));
       return;
     }
-    state.student = null;
+    // Registration is saved. Sign the new account out so the student lands on the sign-in screen, not the dashboard.
+    await sb.auth.signOut();
+    state.session = null; state.student = null; state.isAdmin = null;
     state.draftOk = false;
-    $('su-pass').value = ''; $('su-pass2').value = '';
-    toast('Registration complete. Welcome to HashCLASS.');
-    go('dashboard');
+    resetSignup();
+    showRegistered();
+    go('signin');
   } finally {
     $('su2-back').disabled = false;
     setBusy(btn, false, '', 'signup2-form');
@@ -1321,38 +1534,61 @@ function teardownDashboard() {
 function renderDash() {
   renderJoin(); renderStats(); renderUpcoming(); renderCourseRows(); renderHistory();
 }
+// A student may join a live class only when their registration for that course is marked PAID
+const isPaidFor = (code) => state.myCourses.some((r) => r.course_code === code && r.payment_status === 'paid');
+const ICON = (id) => '<svg class="ic" aria-hidden="true"><use href="#' + id + '"/></svg>';
+function joinHtml(name, label) {
+  const lead = name === 'unpaid' ? 'i-lock' : name === 'idle' ? 'i-clock' : 'i-users';
+  return ICON(lead) + '<span>' + label + '</span>' + (name === 'ready' ? ICON('i-arrow') : '');
+}
+function setJoinState(btn, name, label) {
+  const changed = btn.dataset.state !== name;
+  btn.dataset.state = name;
+  btn.setAttribute('aria-disabled', name === 'ready' ? 'false' : 'true');
+  if (!btn.hasAttribute('aria-busy')) { btn.innerHTML = joinHtml(name, label); delete btn.dataset.label; }
+  // Turn the button over once, backwards, when it becomes the red "not paid" button
+  if (name !== 'unpaid') btn.classList.remove('flip');
+  else if (changed) { btn.classList.remove('flip'); void btn.offsetWidth; btn.classList.add('flip'); }
+}
 function renderJoin() {
-  const s = state.live[0], card = $('join'), btn = $('join-btn'), link = $('join-link');
+  const s = state.live[0], card = $('join'), btn = $('join-btn');
   const next = s ? null : upcoming()[0];
   card.classList.toggle('live', !!s);
   $('join-dot').classList.toggle('on', !!s);
   $('join-eyebrow').textContent = s ? 'LIVE NOW' : next ? 'NEXT CLASS' : 'NO CLASS SCHEDULED';
-  btn.setAttribute('aria-disabled', s ? 'false' : 'true');
-  if (!btn.hasAttribute('aria-busy')) { btn.textContent = s ? 'JOIN CLASS' : 'NOT STARTED'; delete btn.dataset.label; }
+  $('bell-dot').hidden = !s;
+  $('join-kicker').hidden = !(s || next);
+  $('join-class').classList.toggle('small', !(s || next));
   if (!s) {
-    $('join-time').textContent = next ? 'Duration ' + durText(next) : '';
+    setJoinState(btn, 'idle', 'NOT STARTED');
+    $('join-time').textContent = next ? 'Duration: ' + durText(next) : '';
     $('join-class').textContent = next ? next.course_code + (next.title ? ' · ' + next.title : '') : 'Waiting for the next class';
     $('join-status').textContent = next
-      ? DAY.format(new Date(next.starts_at)) + ' at ' + CLOCK.format(new Date(next.starts_at)) + ' (' + rel(next.starts_at) + '). Your lecturer has not started this class yet. This button changes to JOIN CLASS the moment it starts.'
+      ? 'Date: ' + DAY.format(new Date(next.starts_at)) + ' · Time: ' + CLOCK.format(new Date(next.starts_at)) + ' (' + rel(next.starts_at) + '). Your lecturer has not started this class yet. This button turns green and changes to JOIN CLASS the moment it starts.'
       : 'No class has been scheduled yet. This page updates the moment your lecturer adds or starts one.';
-    link.hidden = true;
     return;
   }
   const joined = attendedIds().has(s.id);
+  const paid = isPaidFor(s.course_code);
   const extra = state.live.length > 1 ? ' ' + (state.live.length - 1) + ' more class' + (state.live.length > 2 ? 'es are' : ' is') + ' live.' : '';
   const began = s.started_at || s.starts_at;
-  $('join-time').textContent = 'Started ' + CLOCK.format(new Date(began)) + ' · ' + rel(began);
+  if (!state.ld.c) setJoinState(btn, 'wait', 'CHECKING PAYMENT…');
+  else if (paid) setJoinState(btn, 'ready', 'JOIN CLASS');
+  else setJoinState(btn, 'unpaid', 'YOU HAVE NOT PAID');
+  $('join-time').textContent = 'Started at ' + CLOCK.format(new Date(began)) + ' · ' + rel(began);
   $('join-class').textContent = s.course_code + (s.title ? ' · ' + s.title : '');
-  $('join-status').textContent = (joined ? 'You are marked present. ' : 'Tap JOIN CLASS to be marked present and enter the class. ') + 'Duration ' + durText(s) + '.' + extra;
-  const url = safeUrl(state.links[s.id]);
-  link.hidden = !url;
-  if (url) link.href = url;
+  const lead = !state.ld.c ? 'Checking your payment… '
+    : !paid ? 'Your payment for ' + s.course_code + ' is not confirmed yet. The lecturer marks it PAID once your payment is received, then this button turns green. '
+    : joined ? 'You are marked present. ' : 'Tap JOIN CLASS to be marked present and enter the class. ';
+  $('join-status').textContent = lead + 'Duration: ' + durText(s) + '.' + extra;
 }
 async function onJoin() {
   const btn = $('join-btn');
   if (btn.hasAttribute('aria-busy')) return;
   const s = state.live[0];
-  if (!s) { toast('This class has not started yet. This button changes to JOIN CLASS the moment your lecturer starts it.'); return; }
+  if (!s) { toast('This class has not started yet. This button turns green and changes to JOIN CLASS the moment your lecturer starts it.'); return; }
+  if (!state.ld.c) { toast('Checking your payment. Please try again in a moment.'); return; }
+  if (!isPaidFor(s.course_code)) { toast('You have not paid for ' + s.course_code + '. You can join once the lecturer marks your payment as PAID.'); return; }
   setBusy(btn, true, 'Joining…');
   try {
     let url = safeUrl(state.links[s.id]);
@@ -1383,7 +1619,9 @@ function renderUpcoming() {
   if (!state.ld.s) { ul.replaceChildren(loadingRow()); return; }
   const list = upcoming();
   if (!list.length) {
-    ul.replaceChildren(h('li', { class: 'empty' }, h('strong', { text: 'No classes scheduled' }), 'Classes your lecturer schedules will appear here.'));
+    const li = h('li', { class: 'empty empty-rich' }, h('span', { class: 'eil' }), h('div', {}, h('strong', { text: 'No classes scheduled' }), 'Classes your lecturer schedules will appear here.'));
+    li.firstChild.innerHTML = '<svg viewBox="0 0 120 110" aria-hidden="true"><use href="#hc-cal"/></svg>';
+    ul.replaceChildren(li);
     return;
   }
   ul.replaceChildren(...list.map((x) => {
@@ -1391,9 +1629,9 @@ function renderUpcoming() {
     return h('li', { class: 'item' },
       h('span', { class: 'datechip' }, h('b', { text: DOM.format(d) }), h('span', { text: MON.format(d) })),
       h('div', { class: 'main' },
-        h('div', { class: 't', text: x.course_code + (x.title ? ' · ' + x.title : '') }),
-        h('div', { class: 's', text: DAY.format(d) + ' · ' + CLOCK.format(d) + ' · ' + durText(x) })),
-      h('span', { class: 'pill soft', text: d.getTime() <= Date.now() ? 'Due now' : rel(x.starts_at) }));
+        h('div', { class: 't', text: 'Course: ' + x.course_code + (x.title ? ' · ' + x.title : '') }),
+        h('div', { class: 's', text: 'Date: ' + DAY.format(d) + ' · Time: ' + CLOCK.format(d) + ' · Duration: ' + durText(x) })),
+      h('span', { class: 'pill soft', text: d.getTime() <= Date.now() ? 'Starting now' : 'Starts ' + rel(x.starts_at) }));
   }));
 }
 function renderCourseRows() {
@@ -1413,8 +1651,8 @@ function renderCourseRows() {
       h('div', { class: 'row1' },
         h('span', { class: 'badge', text: c.course_code }),
         h('div', { class: 'main' },
-          h('div', { class: 't', text: F.money(c.price_tzs) }),
-          h('div', { class: 's', text: held.length ? n + ' of ' + held.length + (held.length === 1 ? ' class' : ' classes') + ' attended' : 'No classes held yet' })),
+          h('div', { class: 't', text: 'Fee: ' + F.money(c.price_tzs) }),
+          h('div', { class: 's', text: held.length ? 'Attendance: ' + n + ' of ' + held.length + (held.length === 1 ? ' class' : ' classes') + ' attended' : 'Attendance: no classes held yet' })),
         h('span', { class: 'pill ' + (paid ? 'ok' : 'warn'), text: paid ? 'PAID' : 'Payment pending' })),
       h('div', { class: 'bar', role: 'progressbar', 'aria-label': c.course_code + ' attendance', 'aria-valuemin': '0', 'aria-valuemax': '100', 'aria-valuenow': String(pct) },
         h('i', { style: 'width:' + pct + '%' })));
@@ -1434,14 +1672,15 @@ function renderHistory() {
     return h('li', { class: 'item' },
       h('span', { class: 'badge', text: cs.course_code || '—' }),
       h('div', { class: 'main' },
-        h('div', { class: 't', text: cs.title || 'Live class' }),
-        h('div', { class: 's', text: 'Joined ' + SHORT.format(new Date(a.joined_at)) })),
+        h('div', { class: 't', text: 'Class: ' + (cs.title || 'Live class') }),
+        h('div', { class: 's', text: 'Joined on: ' + SHORT.format(new Date(a.joined_at)) })),
       h('span', { class: 'pill ok', text: 'Attended' }));
   }));
   more.hidden = all.length <= HISTORY_PREVIEW;
-  more.textContent = state.histAll ? 'Show less' : 'Show all (' + all.length + ')';
+  more.textContent = state.histAll ? 'Show less' : 'View all';
 }
 
+const SIGNOUT_HTML = ICON('i-out') + '<span>Sign out</span>';
 async function onSignOut() {
   const btn = $('signout');
   if (btn.hasAttribute('aria-busy')) return;
@@ -1453,6 +1692,7 @@ async function onSignOut() {
     go('signin');
   } finally {
     setBusy(btn, false);
+    btn.innerHTML = SIGNOUT_HTML;
   }
 }
 
@@ -1486,7 +1726,10 @@ const kv = (k, v) => h('div', { class: 'kv' }, h('span', { class: 'k', text: k }
 const emptyLi = (title, text) => h('li', { class: 'empty' }, h('strong', { text: title }), text);
 const statBox = (v, l) => h('div', { class: 'stat' }, h('div', { class: 'stat-v', text: v }), h('div', { class: 'stat-l', text: l }));
 const hostOf = (u) => { try { return new URL(u).hostname; } catch (e) { return u; } };
-const durText = (s) => (s.duration_minutes || 60) + ' min';
+const durText = (s) => {
+  const hrs = Math.round(((s.duration_minutes || 60) / 60) * 100) / 100;   // e.g. 1, 1.5, 0.75
+  return hrs + (hrs === 1 ? ' hour' : ' hours');
+};
 const sessionEnd = (s) => new Date(s.starts_at).getTime() + (s.duration_minutes || 60) * 60000;
 const todayStr = () => new Intl.DateTimeFormat('en-CA', { timeZone: TZ }).format(new Date());
 const classLabel = (s) => s.course_code + (s.title ? ' · ' + s.title : '');
@@ -1986,6 +2229,8 @@ $('su2-back').addEventListener('click', () => go('signup1'));
 $('join-btn').addEventListener('click', onJoin);
 $('hist-more').addEventListener('click', () => { state.histAll = !state.histAll; renderHistory(); });
 $('signout').addEventListener('click', onSignOut);
+$('bell').addEventListener('click', () => { const s = state.live[0]; toast(s ? s.course_code + ' class is live now.' : 'No new notifications.'); });
+document.querySelectorAll('[data-go]').forEach((b) => b.addEventListener('click', () => { const t = $(b.dataset.go); if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }));
 $('admin-form').addEventListener('submit', onAdminSignIn);
 $('class-form').addEventListener('submit', onSaveClass);
 $('c-add').addEventListener('click', toggleClassForm);
