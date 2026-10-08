@@ -174,6 +174,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .pill{flex-shrink:0;padding:3px 8px;border-radius:999px;font-size:10.5px;font-weight:600;white-space:nowrap}
 .pill.ok{background:var(--ok-soft);color:var(--ok)}
 .pill.warn{background:var(--warn-soft);color:var(--warn)}
+.pill.bad{background:var(--danger-soft);color:var(--danger)}
 .pill.soft{background:var(--brand-soft);color:var(--brand-deep)}
 .datechip{flex-shrink:0;width:40px;padding:5px 0;border-radius:9px;background:var(--brand-soft);color:var(--brand-deep);text-align:center;line-height:1.1}
 .datechip b{display:block;font-size:15px;font-variant-numeric:tabular-nums}
@@ -799,7 +800,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-clock"/></svg></span><h2 id="hist-h">Class history</h2><span class="card-sub" id="hist-count"></span><button type="button" class="more" id="hist-more" hidden></button></div>
 <div class="inbox">
 <ul class="list" id="history"></ul>
-<div class="empty" id="history-empty" hidden><strong>No classes attended yet</strong>When you join a live class it shows up here straight away.</div>
+<div class="empty" id="history-empty" hidden><strong>No classes yet</strong>Classes you attend or miss show up here as soon as they are held.</div>
 </div>
 </section>
 </main>
@@ -1326,7 +1327,7 @@ function go(name) {
 async function loadStudent() {
   if (!state.session) { state.student = null; return; }
   const { data, error } = await sb.from('students')
-    .select('full_name, reg_number, year_of_study')
+    .select('full_name, reg_number, year_of_study, created_at')
     .eq('id', state.session.user.id).maybeSingle();
   if (error) console.error('students read failed', error);
   state.student = data || null;
@@ -1834,21 +1835,35 @@ function renderCourseRows() {
   $('my-total').hidden = false;
   $('pay-note').hidden = !state.myCourses.some((c) => c.payment_status !== 'paid');
 }
+// Every held class of the student's courses since they registered: attended ones, plus ended classes they missed
+function historyRows() {
+  const reg = state.student && state.student.created_at ? new Date(state.student.created_at).getTime() : 0;
+  const done = attendedIds();
+  const rows = state.history.map((a) => {
+    const cs = a.class_sessions || {};
+    return { key: new Date(cs.starts_at || a.joined_at).getTime(), attended: true, code: cs.course_code, title: cs.title, joined: a.joined_at };
+  });
+  state.sessions.forEach((x) => {
+    if (x.status !== 'ended' || done.has(x.id) || !enrolled(x.course_code)) return;
+    if (new Date(x.starts_at).getTime() < reg) return;
+    rows.push({ key: new Date(x.starts_at).getTime(), attended: false, code: x.course_code, title: x.title, starts: x.starts_at });
+  });
+  return rows.sort((a, b) => b.key - a.key);
+}
 function renderHistory() {
   const ul = $('history'), more = $('hist-more');
-  const all = state.history, shown = state.histAll ? all : all.slice(0, HISTORY_PREVIEW);
-  $('hist-count').textContent = state.ld.h && all.length ? all.length + ' attended' : '';
-  if (!state.ld.h) { ul.replaceChildren(loadingRow()); $('history-empty').hidden = true; more.hidden = true; return; }
+  const ready = state.ld.h && state.ld.s;
+  if (!ready) { ul.replaceChildren(loadingRow()); $('history-empty').hidden = true; more.hidden = true; $('hist-count').textContent = ''; return; }
+  const all = historyRows(), shown = state.histAll ? all : all.slice(0, HISTORY_PREVIEW);
+  const nAtt = all.filter((r) => r.attended).length, nAbs = all.length - nAtt;
+  $('hist-count').textContent = all.length ? nAtt + ' attended' + (nAbs ? ' · ' + nAbs + ' absent' : '') : '';
   $('history-empty').hidden = all.length > 0;
-  ul.replaceChildren(...shown.map((a) => {
-    const cs = a.class_sessions || {};
-    return h('li', { class: 'item' },
-      h('span', { class: 'badge', text: cs.course_code || '—' }),
-      h('div', { class: 'main' },
-        h('div', { class: 't', text: 'Class: ' + (cs.title || 'Live class') }),
-        h('div', { class: 's', text: 'Joined on: ' + SHORT.format(new Date(a.joined_at)) })),
-      h('span', { class: 'pill ok', text: 'Attended' }));
-  }));
+  ul.replaceChildren(...shown.map((r) => h('li', { class: 'item' },
+    h('span', { class: 'badge', text: r.code || '—' }),
+    h('div', { class: 'main' },
+      h('div', { class: 't', text: 'Class: ' + (r.title || 'Live class') }),
+      h('div', { class: 's', text: r.attended ? 'Joined on: ' + SHORT.format(new Date(r.joined)) : 'Class held on: ' + SHORT.format(new Date(r.starts)) })),
+    h('span', { class: 'pill ' + (r.attended ? 'ok' : 'bad'), text: r.attended ? 'Attended' : 'Absent' }))));
   more.hidden = all.length <= HISTORY_PREVIEW;
   more.textContent = state.histAll ? 'Show less' : 'View all';
 }
