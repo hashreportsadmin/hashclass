@@ -462,6 +462,23 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .toast{left:0;right:0;top:0;bottom:auto;transform:none;width:100%;max-width:none;z-index:60;padding:calc(9px + env(safe-area-inset-top,0px)) 16px 9px;border-radius:0 0 14px 14px;background:linear-gradient(90deg,#3B2BB0,#5440D6);border-bottom:2px solid #8F7BFF;color:#fff;font-size:11.5px;line-height:1.35;font-weight:500;text-align:center;box-shadow:0 8px 22px rgba(30,20,110,.35)}
 .toast:not([hidden]){animation:tdown .25s ease}
 @keyframes tdown{from{transform:translateY(-100%)}to{transform:none}}
+
+/* ---------- Round 3: overlap, fixed top, scrolling list, white toast, green paid card ---------- */
+#view-dash{display:flex;flex-direction:column;height:100vh;height:100dvh;min-height:0;overflow:hidden}
+.dash-fixed{position:relative;z-index:3;flex:0 0 auto}
+#view-dash .dash-head{padding-bottom:40px}
+#view-dash .join-wrap{position:relative;z-index:2;margin-top:-40px;padding-top:0}
+.stats-wrap{padding-top:10px;padding-bottom:4px}
+.dash-scroll{flex:1 1 auto;min-height:0;overflow-x:hidden;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior-y:contain;scroll-behavior:smooth;scrollbar-width:none;
+  -webkit-mask-image:linear-gradient(to bottom,transparent 0,#000 12px);mask-image:linear-gradient(to bottom,transparent 0,#000 12px)}
+.dash-scroll::-webkit-scrollbar{display:none}
+#view-dash .dash{padding-top:8px}
+.stat.c3.paid{background:linear-gradient(135deg,#E4F6EC,#CDEFDC);border-color:#9BDDBB}
+.stat.c3.paid .stat-ic{background:#BDE8D2;color:var(--ok)}
+.stat.c3.paid .stat-v{color:#0B6B42}
+.stat.c3.paid .stat-l{color:#2F7A57}
+.stat.c3.paid .chev{color:var(--ok)}
+.toast{background:#fff;color:#1F2433;font-weight:600;border-bottom:3px solid #6C4DE6;box-shadow:0 8px 22px rgba(30,20,110,.22)}
 </style>
 </head>
 <body>
@@ -702,6 +719,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 
 <!-- ================= DASHBOARD ================= -->
 <section id="view-dash" class="dash-wrap" hidden>
+<div class="dash-fixed">
 <div class="dash-head">
 <div class="wrap">
 <div class="top">
@@ -745,13 +763,17 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <button type="button" id="join-btn" class="join-btn" aria-describedby="join-status">JOIN CLASS</button>
 </section>
 </div>
-
-<main class="dash">
+<div class="wrap stats-wrap">
 <section class="stats" aria-label="Summary">
 <button type="button" class="stat c1" data-go="card-courses"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-book"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-courses">–</span><span class="stat-l">Courses</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
 <button type="button" class="stat c2" data-go="card-hist"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-users"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-attended">–</span><span class="stat-l">Classes attended</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
-<button type="button" class="stat c3" data-go="card-courses"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-fees">–</span><span class="stat-l" id="st-fees-l">Fees</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
+<button type="button" class="stat c3" id="stat-fees" data-go="card-courses"><span class="stat-ic"><svg class="ic" aria-hidden="true"><use href="#i-wallet"/></svg></span><span class="stat-tx"><span class="stat-v" id="st-fees">–</span><span class="stat-l" id="st-fees-l">Fees</span></span><svg class="ic chev" aria-hidden="true"><use href="#i-chev"/></svg></button>
 </section>
+</div>
+</div>
+<div class="dash-scroll" id="dash-scroll">
+<main class="dash">
+
 
 <section class="card up" id="card-up" aria-labelledby="up-h">
 <div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-cal"/></svg></span><h2 id="up-h">Upcoming classes</h2></div>
@@ -776,6 +798,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 </section>
 </main>
 <footer class="dfoot" aria-hidden="true"><span class="ln"></span><span>Learn</span><i></i><span>Grow</span><i></i><span>Succeed</span><span class="ln"></span></footer>
+</div>
 </section>
 
 <!-- ================= ADMIN SIGN IN ================= -->
@@ -1691,6 +1714,7 @@ function renderStats() {
   if (!state.ld.c || !c.length) { $('st-fees').textContent = '–'; $('st-fees-l').textContent = 'Fees'; }
   else if (due > 0) { $('st-fees').textContent = Number(due).toLocaleString('en-US'); $('st-fees-l').textContent = 'Fees due (TZS)'; }
   else { $('st-fees').textContent = 'Paid'; $('st-fees-l').textContent = 'Fees'; }
+  $('stat-fees').classList.toggle('paid', state.ld.c && c.length > 0 && due === 0);
 }
 function renderUpcoming() {
   const ul = $('upcoming');
