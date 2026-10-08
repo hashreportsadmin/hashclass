@@ -661,6 +661,11 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <p class="err" id="su-reg-err" role="alert" hidden></p>
 </div>
 <div class="group">
+<label for="su-email">Email</label>
+<div class="field"><input id="su-email" name="email" type="email" inputmode="email" autocomplete="email" autocapitalize="none" spellcheck="false" placeholder="name@example.com" aria-describedby="su-email-err"></div>
+<p class="err" id="su-email-err" role="alert" hidden></p>
+</div>
+<div class="group">
 <label for="su-year">Year of Study</label>
 <div class="field">
 <select id="su-year" name="year" required aria-describedby="su-year-err">
@@ -1117,6 +1122,7 @@ function debounce(key, fn, ms) {
 /* ------------------- form validation and button state -------------------
    Every action button stays disabled until all its fields are valid, and
    while its action is running. Problems are marked on the field itself. */
+const EMAIL_RE = /^[A-Za-z0-9._%+-]+@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
 const MISSING_REG = 'Enter your registration number as TXX-XX-XXXXX.';
 const NOT_AVAILABLE = 'Not yet available. Only Second Year can register right now.';
 
@@ -1131,11 +1137,12 @@ const FORMS = {
     }
   },
   'signup1-form': {
-    btn: 'su1-submit', msg: null, fields: ['su-name', 'su-reg', 'su-year', 'su-pass', 'su-pass2'],
+    btn: 'su1-submit', msg: null, fields: ['su-name', 'su-reg', 'su-email', 'su-year', 'su-pass', 'su-pass2'],
     check() {
       const p = {};
       if (!/^[A-Z]+( [A-Z]+)+$/.test($('su-name').value.trim())) p['su-name'] = 'Enter your full name (at least two names).';
       if (!F.REG_RE.test($('su-reg').value)) p['su-reg'] = MISSING_REG;
+      if (!EMAIL_RE.test($('su-email').value.trim())) p['su-email'] = 'Enter a valid email address, like name@example.com.';
       const year = $('su-year').value;
       if (!year) p['su-year'] = 'Select your year of study.';
       else if (year !== '2') p['su-year'] = NOT_AVAILABLE;
@@ -1523,7 +1530,7 @@ function backToDetailsWithRegError() {
 function resetSignup() {
   $('signup1-form').reset(); $('signup2-form').reset();
   state.selected.clear();
-  ['su-name', 'su-reg', 'su-year', 'su-pass', 'su-pass2', 'su-pay', 'su-payname', 'courses'].forEach((id) => touched.delete(id));
+  ['su-name', 'su-reg', 'su-email', 'su-year', 'su-pass', 'su-pass2', 'su-pay', 'su-payname', 'courses'].forEach((id) => touched.delete(id));
   delete serverErr['signup1-form']; delete serverErr['signup2-form'];
   $('su-reg').dataset.prev = ''; $('su-pay').dataset.prev = '';
   document.querySelectorAll('#course-list input').forEach((i) => { i.checked = false; });
@@ -1545,13 +1552,13 @@ async function onRegister(e) {
   if (Object.keys(problems).length) { focusFirstProblem('signup2-form', problems); return; }
 
   setMsg('su2-msg', '');
-  const reg = $('su-reg').value, password = $('su-pass').value, fullName = $('su-name').value.trim();
+  const reg = $('su-reg').value, password = $('su-pass').value, fullName = $('su-name').value.trim(), contactEmail = $('su-email').value.trim().toLowerCase();
   const pay = $('su-pay').value, payName = $('su-payname').value.trim();
   setBusy(btn, true, 'Registering…');
   $('su2-back').disabled = true;   // no going back while the registration is being saved
   try {
     const email = regToEmail(reg);
-    let { data, error } = await sb.auth.signUp({ email, password, options: { data: { full_name: fullName, reg_number: reg } } });
+    let { data, error } = await sb.auth.signUp({ email, password, options: { data: { full_name: fullName, reg_number: reg, contact_email: contactEmail } } });
     if (error && (error.code === 'user_already_exists' || /already registered/i.test(error.message))) {
       // Finishing a registration that was interrupted, or the account already exists
       ({ data, error } = await sb.auth.signInWithPassword({ email, password }));
