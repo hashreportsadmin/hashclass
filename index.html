@@ -500,6 +500,40 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 .dlg-btns button{flex:1;height:46px;border-radius:12px;font-size:14px;font-weight:600;letter-spacing:.04em;cursor:pointer}
 .dlg-btns .dlg-cancel{background:#fff;border:1.5px solid var(--line);color:var(--ink)}
 .dlg-btns .dlg-ok{background:var(--brand);border:0;color:#fff;box-shadow:0 6px 16px rgba(108,77,230,.28)}
+
+/* ---------- Pay link on My courses + payment popup ---------- */
+.paylink{flex-shrink:0;margin-left:auto;min-height:32px;padding:0 10px;border:0;border-radius:8px;background:var(--brand-soft);color:var(--brand-deep);font-family:inherit;font-size:11.5px;font-weight:700;white-space:nowrap;cursor:pointer}
+.paylink:hover{background:#E4DEFF}
+.paylink[hidden]{display:none}
+#view-dash .card-head h2#mc-h{flex:1 1 auto}
+.pay-pop{position:fixed;inset:0;z-index:70;display:grid;place-items:center;padding:20px;background:rgba(20,16,60,.45);animation:fadein .2s ease}
+.pay-card{position:relative;width:min(100%,380px);max-height:calc(100dvh - 40px);overflow-y:auto;padding:24px 18px 18px;border-radius:22px;background:#fff;color:var(--ink);box-shadow:0 22px 50px rgba(30,20,110,.35);animation:popin .25s cubic-bezier(.2,1.2,.4,1)}
+.pay-x{position:absolute;top:10px;right:10px;width:36px;height:36px;display:grid;place-items:center;border:0;border-radius:50%;background:var(--field);color:var(--ink);font-size:22px;line-height:1;cursor:pointer}
+.pay-x:hover{background:var(--brand-soft);color:var(--brand-deep)}
+.pay-card h3{padding-right:40px;font-size:17px;font-weight:700;margin-bottom:12px}
+.pay-card h3{margin-bottom:6px}
+.pay-desc{margin:0 0 12px;font-size:13.5px;line-height:1.45;color:var(--muted)}
+.pay-box{padding:12px 14px;border-radius:14px;background:var(--brand-soft);border:1px solid #DDD5FF}
+.pay-k{font-size:11.5px;font-weight:600;color:var(--muted)}
+.pay-v{margin-top:2px;font-size:15px;font-weight:700;color:var(--brand-deep);overflow-wrap:anywhere}
+.pay-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.pay-box .pay-row+.pay-k{margin-top:12px}
+.pay-num{font-size:22px;letter-spacing:.04em;font-variant-numeric:tabular-nums}
+.pay-copy{flex-shrink:0;min-width:84px;height:38px;padding:0 14px;border:0;border-radius:10px;background:var(--brand);color:#fff;font-family:inherit;font-size:13px;font-weight:700;letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 14px rgba(108,77,230,.28)}
+.pay-copy:hover{background:var(--brand-hover)}
+.pay-copy.done{background:var(--brand-deep)}
+.pay-sec{margin:16px 0 8px;font-size:12px;font-weight:700;letter-spacing:.05em;color:var(--ink)}
+.pay-mine{padding:12px 14px;border-radius:14px;background:var(--field);border:1px solid var(--line)}
+.pay-mine .pay-k+.pay-v{margin-bottom:10px}
+.pay-mine .pay-v:last-child{margin-bottom:0}
+.pay-form{display:flex;flex-direction:column;gap:10px}
+.pay-form .group{gap:5px}
+.pay-form label{font-size:12px;font-weight:600;color:var(--muted)}
+.pay-form .field{height:46px}
+.pay-card .btn{margin-top:12px;height:46px;font-size:14px}
+.pay-card .btn.secondary{margin-top:8px}
+.numlink{padding:0;border:0;background:none;font-family:inherit;font-size:12px;font-weight:600;color:var(--link);text-decoration:underline;font-variant-numeric:tabular-nums;cursor:pointer;text-align:right}
+.pay-card a.btn{text-decoration:none}
 </style>
 </head>
 <body>
@@ -807,7 +841,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 </section>
 
 <section class="card crs" id="card-courses" aria-labelledby="mc-h">
-<div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-cap"/></svg></span><h2 id="mc-h">My courses</h2></div>
+<div class="card-head"><span class="cic"><svg class="ic" aria-hidden="true"><use href="#i-cap"/></svg></span><h2 id="mc-h">My courses</h2><button type="button" class="paylink" id="pay-link" hidden>Click here to pay</button></div>
 <div class="inbox">
 <ul class="list" id="my-courses"></ul>
 <div class="sum" id="my-total" hidden><span>Total fees</span><span id="my-total-v"></span></div>
@@ -1347,10 +1381,17 @@ function go(name) {
 }
 async function loadStudent() {
   if (!state.session) { state.student = null; return; }
-  const { data, error } = await sb.from('students')
-    .select('full_name, reg_number, year_of_study, created_at')
+  let { data, error } = await sb.from('students')
+    .select('full_name, reg_number, year_of_study, created_at, payment_number, payment_name')
     .eq('id', state.session.user.id).maybeSingle();
-  if (error) console.error('students read failed', error);
+  if (error) {
+    // Payment columns not readable: fall back to the basic profile so sign-in still works
+    console.warn('students read with payment details failed', error);
+    ({ data, error } = await sb.from('students')
+      .select('full_name, reg_number, year_of_study, created_at')
+      .eq('id', state.session.user.id).maybeSingle());
+    if (error) console.error('students read failed', error);
+  }
   state.student = data || null;
 }
 async function route() {
@@ -1874,10 +1915,10 @@ function renderUpcoming() {
 }
 function renderCourseRows() {
   const ul = $('my-courses');
-  if (!state.ld.c) { ul.replaceChildren(loadingRow()); $('my-total').hidden = true; $('pay-note').hidden = true; return; }
+  if (!state.ld.c) { ul.replaceChildren(loadingRow()); $('my-total').hidden = true; $('pay-note').hidden = true; $('pay-link').hidden = true; return; }
   if (!state.myCourses.length) {
     ul.replaceChildren(h('li', { class: 'empty' }, h('strong', { text: 'No courses yet' }), 'Courses you register for show up here.'));
-    $('my-total').hidden = true; $('pay-note').hidden = true;
+    $('my-total').hidden = true; $('pay-note').hidden = true; $('pay-link').hidden = true;
     return;
   }
   const done = attendedIds();
@@ -1898,6 +1939,7 @@ function renderCourseRows() {
   $('my-total-v').textContent = F.money(state.myCourses.reduce((n, c) => n + (c.price_tzs || 0), 0));
   $('my-total').hidden = false;
   $('pay-note').hidden = !state.myCourses.some((c) => c.payment_status !== 'paid');
+  $('pay-link').hidden = $('pay-note').hidden;
 }
 // Every held class of the student's courses since they registered: attended ones, plus ended classes they missed
 function historyRows() {
@@ -2360,6 +2402,26 @@ function filteredStudents() {
     return true;
   });
 }
+function showContactDialog(s) {
+  document.querySelectorAll('.pay-pop').forEach((n) => n.remove());
+  const opener = document.activeElement;
+  const num = String(s.payment_number || '');
+  const digits = num.replace(/[^0-9]/g, '');
+  const close = () => { pop.remove(); document.removeEventListener('keydown', onKey); if (opener && opener.focus) opener.focus(); };
+  const onKey = (ev) => { if (ev.key === 'Escape') close(); };
+  const x = h('button', { type: 'button', class: 'pay-x', 'aria-label': 'Close', text: '×', onclick: close });
+  const wa = h('a', { class: 'btn', href: 'https://wa.me/' + digits, target: '_blank', rel: 'noopener noreferrer', text: 'WHATSAPP', onclick: () => setTimeout(close, 0) });
+  const sms = h('a', { class: 'btn secondary', href: 'sms:' + num, text: 'SMS', onclick: () => setTimeout(close, 0) });
+  const pop = h('div', { class: 'pay-pop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Contact ' + s.full_name },
+    h('div', { class: 'pay-card' }, x,
+      h('h3', { text: 'Contact student' }),
+      h('p', { class: 'pay-desc', text: 'How do you want to reach ' + s.full_name + ' on ' + num + '?' }),
+      wa, sms));
+  pop.addEventListener('click', (ev) => { if (ev.target === pop) close(); });
+  document.addEventListener('keydown', onKey);
+  document.body.append(pop);
+  wa.focus();
+}
 function userCard(s) {
   const rs = regsOf(s.id).slice().sort((x, y) => x.course_code.localeCompare(y.course_code));
   const st = payState(rs), [pcls, plabel] = PAY_PILL[st];
@@ -2376,7 +2438,8 @@ function userCard(s) {
         h('div', { class: 's', text: s.reg_number + ' · ' + (s.year_of_study === 2 ? 'Second Year' : 'Year ' + s.year_of_study) })),
       h('span', { class: 'pill ' + pcls, text: plabel })),
     kv('Email', s.email || '–'),
-    kv('Payment number', s.payment_number),
+    h('div', { class: 'kv' }, h('span', { class: 'k', text: 'Payment number' }),
+      h('button', { type: 'button', class: 'numlink', text: s.payment_number, 'aria-label': 'Contact ' + s.full_name + ' on ' + s.payment_number, onclick: () => showContactDialog(s) })),
     kv('Payment name', s.payment_name),
     kv('Registered', SHORT.format(new Date(s.created_at))),
     kv('Fees paid', 'TZS ' + money0(paid) + ' of ' + money0(total)),
@@ -2396,11 +2459,13 @@ function renderUsers() {
   ul.replaceChildren(...(list.length ? list.map(userCard) : [emptyLi(a.students.length ? 'No matches' : 'No students yet', a.students.length ? 'Try a different search or filter.' : 'Students appear here as soon as they register.')]));
 }
 function exportUsers() {
-  const rows = [['Full name', 'Registration number', 'Email', 'Year', 'Payment number', 'Payment name', 'Courses', 'Fees TZS', 'Paid TZS', 'Status', 'Registered']];
+  // Only three columns. Registration requires at least two names: the first word is the
+  // first name and the last word is the last name (any middle names are left out).
+  const rows = [['First Name', 'Last Name', 'Email']];
   filteredStudents().forEach((s) => {
-    const rs = regsOf(s.id);
-    rows.push([s.full_name, s.reg_number, s.email || '', s.year_of_study, s.payment_number, s.payment_name, rs.map((r) => r.course_code).join(' '),
-      sum(rs, (r) => r.price_tzs), sum(rs.filter((r) => r.payment_status === 'paid'), (r) => r.price_tzs), PAY_PILL[payState(rs)][1], new Date(s.created_at).toISOString()]);
+    const parts = String(s.full_name || '').trim().split(/\s+/).filter(Boolean);
+    const first = parts[0] || '', last = parts.length > 1 ? parts[parts.length - 1] : '';
+    rows.push([first, last, s.email || '']);
   });
   downloadCsv('hashclass-students-' + todayStr() + '.csv', rows);
 }
@@ -2477,6 +2542,129 @@ function exportAttendance() {
   res.absent.forEach((st) => rows.push([st.full_name, st.reg_number, 'Absent', '']));
   downloadCsv('hashclass-attendance-' + res.s.course_code + '-' + res.s.starts_at.slice(0, 10) + '.csv', rows);
 }
+
+
+/* ------------------- pay popup (Airtel Lipa Namba) -------------------
+   Shown from "Click here to pay" on My courses while a payment is pending.
+   The student can also correct the payment number and name they gave at
+   registration. Saving uses the RPC update_my_payment (supabase-payment-edit.sql);
+   if that is not installed it falls back to a direct update of the student's own row. */
+const LIPA_NUMBER = '140576405', LIPA_NAME = 'SADATI HAMISI KHALIFA';
+async function copyText(text) {
+  try { if (navigator.clipboard && window.isSecureContext) { await navigator.clipboard.writeText(text); return true; } } catch (e) { /* fall through */ }
+  const ta = h('textarea', { readonly: true, style: 'position:fixed;top:0;left:0;opacity:0' });
+  ta.value = text; document.body.append(ta); ta.select();
+  let ok = false; try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+  ta.remove(); return ok;
+}
+async function savePaymentDetails(number, name) {
+  let { error } = await sb.rpc('update_my_payment', { p_payment_number: number, p_payment_name: name });
+  if (error && (error.code === 'PGRST202' || error.code === '42883' || /could not find the function/i.test(error.message || ''))) {
+    ({ error } = await sb.from('students').update({ payment_number: number, payment_name: name }).eq('id', state.session.user.id));
+  }
+  return error;
+}
+async function showPayDialog() {
+  document.querySelectorAll('.pay-pop').forEach((n) => n.remove());
+  const opener = document.activeElement;
+  if (state.student && state.student.payment_number === undefined) await loadStudent();
+  const st = state.student || {};
+  const pendingDue = state.myCourses.filter((c) => c.payment_status !== 'paid').reduce((n, c) => n + (c.price_tzs || 0), 0);
+  const close = () => { pop.remove(); document.removeEventListener('keydown', onKey); if (opener && opener.focus) opener.focus(); };
+  const onKey = (ev) => { if (ev.key === 'Escape') close(); };
+
+  // Lipa Namba details
+  const copyBtn = h('button', { type: 'button', class: 'pay-copy', text: 'Copy', 'aria-label': 'Copy Lipa Namba' });
+  let copyTimer;
+  copyBtn.addEventListener('click', async () => {
+    const ok = await copyText(LIPA_NUMBER);
+    if (!ok) { toast('Could not copy. Please copy the number by hand.'); return; }
+    copyBtn.textContent = 'Copied'; copyBtn.classList.add('done');
+    clearTimeout(copyTimer);
+    copyTimer = setTimeout(() => { copyBtn.textContent = 'Copy'; copyBtn.classList.remove('done'); }, 1800);
+  });
+  const lipa = h('div', { class: 'pay-box' },
+    h('div', { class: 'pay-k', text: 'Lipa Namba' }),
+    h('div', { class: 'pay-row' }, h('div', { class: 'pay-v pay-num', text: LIPA_NUMBER }), copyBtn),
+    h('div', { class: 'pay-k', text: 'Jina La Lipa Namba' }),
+    h('div', { class: 'pay-v', text: LIPA_NAME }));
+
+  // The student's own payment details, view mode and edit mode
+  const mine = h('div', { class: 'pay-mine' });
+  const actions = h('div', {});
+  const showView = () => {
+    mine.replaceChildren(
+      h('div', { class: 'pay-k', text: 'Namba ya malipo' }), h('div', { class: 'pay-v', text: st.payment_number || '–' }),
+      h('div', { class: 'pay-k', text: 'Jina la namba ya malipo' }), h('div', { class: 'pay-v', text: st.payment_name || '–' }));
+    const edit = h('button', { type: 'button', class: 'btn secondary', text: 'BADILI NAMBA YAKO YA MALIPO' });
+    edit.addEventListener('click', showEdit);
+    actions.replaceChildren(edit);
+  };
+  const showEdit = () => {
+    const numIn = h('input', { id: 'pd-pay', type: 'tel', inputmode: 'numeric', autocomplete: 'off', placeholder: '+255XXXXXXXXX', 'aria-describedby': 'pd-pay-err' });
+    const nameIn = h('input', { id: 'pd-payname', type: 'text', autocomplete: 'off', autocapitalize: 'characters', spellcheck: 'false', placeholder: 'Name registered on the number', 'aria-describedby': 'pd-payname-err' });
+    numIn.value = st.payment_number || ''; nameIn.value = st.payment_name || '';
+    bindPay(numIn); bindName(nameIn);
+    const numErr = h('p', { class: 'err', id: 'pd-pay-err', role: 'alert', hidden: true });
+    const nameErr = h('p', { class: 'err', id: 'pd-payname-err', role: 'alert', hidden: true });
+    const msg = h('p', { class: 'formmsg', role: 'alert', hidden: true });
+    const save = h('button', { type: 'submit', class: 'btn', text: 'SAVE', disabled: true });
+    const numF = h('div', { class: 'field' }, numIn), nameF = h('div', { class: 'field' }, nameIn);
+    const check = (show) => {
+      const bad = {};
+      if (!F.PAY_RE.test(numIn.value)) bad.n = 'Enter +255 followed by 9 digits. The first digit must be 6 or 7.';
+      const pn = nameIn.value.trim();
+      if (!/^[A-Z]+( [A-Z]+)*$/.test(pn) || pn.length < 2) bad.m = 'Enter the name registered on the payment number, letters only.';
+      numErr.textContent = show.n && bad.n ? bad.n : ''; numErr.hidden = !numErr.textContent; numF.classList.toggle('invalid', !numErr.hidden);
+      nameErr.textContent = show.m && bad.m ? bad.m : ''; nameErr.hidden = !nameErr.textContent; nameF.classList.toggle('invalid', !nameErr.hidden);
+      const changed = numIn.value !== (st.payment_number || '') || pn !== (st.payment_name || '');
+      if (!save.hasAttribute('aria-busy')) save.disabled = !!(bad.n || bad.m) || !changed;
+      msg.hidden = true;
+    };
+    const seen = { n: false, m: false };
+    numIn.addEventListener('input', () => { seen.n = true; check(seen); });
+    nameIn.addEventListener('input', () => { seen.m = true; check(seen); });
+    numIn.addEventListener('blur', () => { seen.n = true; check(seen); });
+    nameIn.addEventListener('blur', () => { seen.m = true; check(seen); });
+    const form = h('form', { class: 'pay-form', novalidate: true },
+      h('div', { class: 'group' }, h('label', { for: 'pd-pay', text: 'Your Payment Number' }), numF, numErr),
+      h('div', { class: 'group' }, h('label', { for: 'pd-payname', text: 'Payment Number Name' }), nameF, nameErr),
+      msg, save);
+    form.addEventListener('submit', async (ev) => {
+      ev.preventDefault();
+      if (save.disabled) return;
+      const number = numIn.value, name = nameIn.value.trim();
+      setBusy(save, true, 'Saving…');
+      const error = await savePaymentDetails(number, name);
+      setBusy(save, false);
+      if (error) {
+        console.error('payment details update failed', error);
+        msg.textContent = problemText(error, 'save your payment details'); msg.hidden = false;
+        return;
+      }
+      st.payment_number = number; st.payment_name = name;
+      if (state.student) { state.student.payment_number = number; state.student.payment_name = name; }
+      toast('Your payment details have been saved.');
+      showView();
+    });
+    mine.replaceChildren(form);
+    actions.replaceChildren();
+    numIn.focus();   // bindPay puts the caret at the end so the number can be deleted and retyped
+  };
+  showView();
+
+  const x = h('button', { type: 'button', class: 'pay-x', 'aria-label': 'Close', text: '×', onclick: close });
+  const pop = h('div', { class: 'pay-pop', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Pay with Airtel Lipa Namba' },
+    h('div', { class: 'pay-card' }, x,
+      h('h3', { text: 'Airtel Lipa Namba' }),
+      h('p', { class: 'pay-desc', text: 'Lipia ' + F.money(pendingDue) + ' kupitia Lipa Namba hii na utaweza kujiunga na vipindi vya online.' }), lipa,
+      h('div', { class: 'pay-sec', text: 'TAARIFA ZAKO ZA MALIPO' }), mine, actions));
+  pop.addEventListener('click', (ev) => { if (ev.target === pop) close(); });
+  document.addEventListener('keydown', onKey);
+  document.body.append(pop);
+  x.focus();
+}
+$('pay-link').addEventListener('click', showPayDialog);
 
 /* ------------------------------- boot ------------------------------- */
 [['si-reg', bindReg], ['su-reg', bindReg], ['su-name', bindName], ['su-payname', bindName], ['su-pay', bindPay]].forEach(([id, fn]) => fn($(id)));
