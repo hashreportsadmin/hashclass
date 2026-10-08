@@ -918,7 +918,7 @@ label,legend,.lbl{font-size:14px;font-weight:500;color:var(--ink)}
 <div class="toolbar">
 <div class="field">
 <svg class="lead" viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>
-<input id="u-search" type="search" placeholder="Search name, registration or phone" aria-label="Search students" autocomplete="off" spellcheck="false">
+<input id="u-search" type="search" placeholder="Search name, registration, email or phone" aria-label="Search students" autocomplete="off" spellcheck="false">
 </div>
 <select class="sel" id="u-filter" aria-label="Filter by payment">
 <option value="all">All payments</option>
@@ -1584,6 +1584,9 @@ async function onRegister(e) {
       setMsg('su2-msg', problemText(rpcErr, 'save your registration'));
       return;
     }
+    // Keep the contact email on the student record so the admin can see it (needs students.email, see add_student_email.sql)
+    const { error: mailErr } = await sb.rpc('set_my_email', { p_email: contactEmail });
+    if (mailErr) console.warn('email not saved to the student record', mailErr);
     // Registration is saved. Sign the new account out so the student lands on the sign-in screen, not the dashboard.
     await sb.auth.signOut();
     state.session = null; state.student = null; state.isAdmin = null;
@@ -2093,8 +2096,14 @@ async function onAdminSignOut() {
 /* ---- loading and live updates ---- */
 async function refreshAdmin() {
   const a = state.a;
+  const studentsQ = async () => {
+    const cols = 'id, full_name, reg_number, year_of_study, payment_number, payment_name, created_at';
+    let r = await sb.from('students').select(cols + ', email').order('created_at', { ascending: false }).limit(5000);
+    if (r.error) r = await sb.from('students').select(cols).order('created_at', { ascending: false }).limit(5000);   // email column not added yet
+    return r;
+  };
   const [st, rg, se, li, at] = await Promise.all([
-    sb.from('students').select('id, full_name, reg_number, year_of_study, payment_number, payment_name, created_at').order('created_at', { ascending: false }).limit(5000),
+    studentsQ(),
     sb.from('registrations').select('id, student_id, course_code, price_tzs, payment_status').limit(10000),
     sb.from('class_sessions').select('id, course_code, title, status, starts_at, ends_at, started_at, duration_minutes').order('starts_at', { ascending: false }).limit(500),
     sb.from('class_links').select('session_id, meeting_url').limit(1000),
@@ -2344,7 +2353,7 @@ function renderAdminDash() {
 function filteredStudents() {
   const a = state.a;
   return a.students.filter((s) => {
-    if (a.q && !(s.full_name.toLowerCase().includes(a.q) || s.reg_number.toLowerCase().includes(a.q) || s.payment_number.includes(a.q))) return false;
+    if (a.q && !(s.full_name.toLowerCase().includes(a.q) || s.reg_number.toLowerCase().includes(a.q) || (s.email || '').toLowerCase().includes(a.q) || s.payment_number.includes(a.q))) return false;
     const st = payState(regsOf(s.id));
     if (a.pay === 'paid') return st === 'paid';
     if (a.pay === 'pending') return st === 'pending' || st === 'partial';
@@ -2366,6 +2375,7 @@ function userCard(s) {
         h('div', { class: 't', text: s.full_name }),
         h('div', { class: 's', text: s.reg_number + ' · ' + (s.year_of_study === 2 ? 'Second Year' : 'Year ' + s.year_of_study) })),
       h('span', { class: 'pill ' + pcls, text: plabel })),
+    kv('Email', s.email || '–'),
     kv('Payment number', s.payment_number),
     kv('Payment name', s.payment_name),
     kv('Registered', SHORT.format(new Date(s.created_at))),
@@ -2386,10 +2396,10 @@ function renderUsers() {
   ul.replaceChildren(...(list.length ? list.map(userCard) : [emptyLi(a.students.length ? 'No matches' : 'No students yet', a.students.length ? 'Try a different search or filter.' : 'Students appear here as soon as they register.')]));
 }
 function exportUsers() {
-  const rows = [['Full name', 'Registration number', 'Year', 'Payment number', 'Payment name', 'Courses', 'Fees TZS', 'Paid TZS', 'Status', 'Registered']];
+  const rows = [['Full name', 'Registration number', 'Email', 'Year', 'Payment number', 'Payment name', 'Courses', 'Fees TZS', 'Paid TZS', 'Status', 'Registered']];
   filteredStudents().forEach((s) => {
     const rs = regsOf(s.id);
-    rows.push([s.full_name, s.reg_number, s.year_of_study, s.payment_number, s.payment_name, rs.map((r) => r.course_code).join(' '),
+    rows.push([s.full_name, s.reg_number, s.email || '', s.year_of_study, s.payment_number, s.payment_name, rs.map((r) => r.course_code).join(' '),
       sum(rs, (r) => r.price_tzs), sum(rs.filter((r) => r.payment_status === 'paid'), (r) => r.price_tzs), PAY_PILL[payState(rs)][1], new Date(s.created_at).toISOString()]);
   });
   downloadCsv('hashclass-students-' + todayStr() + '.csv', rows);
