@@ -1054,7 +1054,7 @@ const state = {
   session: null, student: null, draftOk: false,
   courseList: DEFAULT_COURSES.slice(), selected: new Set(),
   myCourses: [], live: [], history: [], sessions: [], histAll: false, ld: { c: false, s: false, h: false }, tick: null,
-  channel: null, dashUid: null, timers: {}, links: {}, isAdmin: null, a: null
+  flashUntil: 0, channel: null, dashUid: null, timers: {}, links: {}, isAdmin: null, a: null
 };
 
 if (!window.supabase) {
@@ -1663,6 +1663,7 @@ function teardownDashboard() {
   // forget the last student's data so the next one never sees it
   state.myCourses = []; state.sessions = []; state.live = []; state.history = []; state.links = {};
   state.histAll = false; state.ld = { c: false, s: false, h: false };
+  state.flashUntil = 0; clearTimeout(state.timers.flash);
   $('conn').classList.remove('on');
   $('conn-t').textContent = 'Connecting';
 }
@@ -1678,13 +1679,13 @@ function joinHtml(name, label) {
   return ICON(lead) + '<span>' + label + '</span>' + (name === 'ready' ? ICON('i-arrow') : '');
 }
 function setJoinState(btn, name, label) {
-  const changed = btn.dataset.state !== name;
+  const prev = btn.dataset.state;
+  const changed = prev !== name;
   btn.dataset.state = name;
   btn.setAttribute('aria-disabled', name === 'ready' ? 'false' : 'true');
   if (!btn.hasAttribute('aria-busy')) { btn.innerHTML = joinHtml(name, label); delete btn.dataset.label; }
-  // Turn the button over once, backwards, when it becomes the red "not paid" button
-  if (name !== 'unpaid') btn.classList.remove('flip');
-  else if (changed) { btn.classList.remove('flip'); void btn.offsetWidth; btn.classList.add('flip'); }
+  // Turn the button over once when it becomes the red "not paid" button, and again when it turns back
+  if (changed && (name === 'unpaid' || prev === 'unpaid')) { btn.classList.remove('flip'); void btn.offsetWidth; btn.classList.add('flip'); }
 }
 function renderJoin() {
   const s = state.live[0], card = $('join'), btn = $('join-btn');
@@ -1709,14 +1710,21 @@ function renderJoin() {
   const extra = state.live.length > 1 ? ' ' + (state.live.length - 1) + ' more class' + (state.live.length > 2 ? 'es are' : ' is') + ' live.' : '';
   const began = s.started_at || s.starts_at;
   if (!state.ld.c) setJoinState(btn, 'wait', 'CHECKING PAYMENT…');
-  else if (paid) setJoinState(btn, 'ready', 'JOIN CLASS');
-  else setJoinState(btn, 'unpaid', 'YOU HAVE NOT PAID');
+  else if (!paid && Date.now() < state.flashUntil) setJoinState(btn, 'unpaid', 'YOU HAVE NOT PAID');
+  else setJoinState(btn, 'ready', 'JOIN CLASS');   // unpaid students see the same JOIN CLASS button
   $('join-time').textContent = 'Started at ' + CLOCK.format(new Date(began)) + ' · ' + rel(began);
   $('join-class').textContent = s.course_code + (s.title ? ' · ' + s.title : '');
   const lead = !state.ld.c ? 'Checking your payment… '
-    : !paid ? 'Your payment for ' + s.course_code + ' is not confirmed yet. The lecturer marks it PAID once your payment is received, then this button turns green. '
+    : !paid ? 'Your payment for ' + s.course_code + ' is not confirmed yet. You can join once the lecturer marks it PAID. '
     : joined ? 'You are marked present. ' : 'Tap JOIN CLASS to be marked present and enter the class. ';
   $('join-status').textContent = lead + 'Duration: ' + durText(s) + '.' + extra;
+}
+// Unpaid student tapped JOIN CLASS: the button flips to red "YOU HAVE NOT PAID" for 3 seconds, then flips back
+function flashUnpaid() {
+  state.flashUntil = Date.now() + 3000;
+  renderJoin();
+  clearTimeout(state.timers.flash);
+  state.timers.flash = setTimeout(() => { state.flashUntil = 0; renderJoin(); }, 3000);
 }
 async function onJoin() {
   const btn = $('join-btn');
@@ -1724,7 +1732,7 @@ async function onJoin() {
   const s = state.live[0];
   if (!s) { toast('This class has not started yet. This button turns green and changes to JOIN CLASS the moment your lecturer starts it.'); return; }
   if (!state.ld.c) { toast('Checking your payment. Please try again in a moment.'); return; }
-  if (!isPaidFor(s.course_code)) { toast('You have not paid for ' + s.course_code + '. You can join once the lecturer marks your payment as PAID.'); return; }
+  if (!isPaidFor(s.course_code)) { flashUnpaid(); return; }
   setBusy(btn, true, 'Joining…');
   try {
     let url = safeUrl(state.links[s.id]);
@@ -2365,6 +2373,7 @@ $('signup1-form').addEventListener('submit', onNext);
 $('signup2-form').addEventListener('submit', onRegister);
 $('su2-back').addEventListener('click', () => go('signup1'));
 $('join-btn').addEventListener('click', onJoin);
+$('join-btn').addEventListener('animationend', (e) => { if (e.animationName === 'flipback') e.currentTarget.classList.remove('flip'); });
 $('hist-more').addEventListener('click', () => { state.histAll = !state.histAll; renderHistory(); });
 $('signout').addEventListener('click', onSignOut);
 $('bell').addEventListener('click', () => { const s = state.live[0]; toast(s ? s.course_code + ' class is live now.' : 'No new notifications.'); });
